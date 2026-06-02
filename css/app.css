@@ -714,3 +714,8 @@ textarea.field-input {
 .pill[aria-pressed="true"] { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
 
 .bar-chart { width: 100%; height: 140px; margin: 8px 0 20px; display: block; }
+
+@media print {
+  .tab-bar, .app-header, .pressure-strip, #doctor-print, .pill-group { display: none !important; }
+  #view-doctor { display: block !important; }
+}
