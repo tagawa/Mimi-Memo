@@ -2,10 +2,14 @@
 :root {
   --color-accent:          #0f766e;
   --color-accent-dark:     #0d5c56;
+  --color-accent-rgb:      15, 118, 110; /* keep in sync with --color-accent; used for rgba() shadows */
   --color-accent-bg:       #ccfbf1;
   --color-mild:            #2e7d32;
   --color-moderate:        #b45309;
   --color-severe:          #b91c1c;
+  --color-mild-bg:         #dcfce7;
+  --color-moderate-bg:     #fef3c7;
+  --color-severe-bg:       #fee2e2;
   --color-text:            #1a1a1a;
   --color-text-secondary:  #555555;
   --color-text-muted:      #767676;
@@ -209,9 +213,9 @@ input, textarea {
   flex-shrink: 0;
 }
 
-.loudness-badge--mild     { background: #dcfce7; color: var(--color-mild); }
-.loudness-badge--moderate { background: #fef3c7; color: var(--color-moderate); }
-.loudness-badge--severe   { background: #fee2e2; color: var(--color-severe); }
+.loudness-badge--mild     { background: var(--color-mild-bg); color: var(--color-mild); }
+.loudness-badge--moderate { background: var(--color-moderate-bg); color: var(--color-moderate); }
+.loudness-badge--severe   { background: var(--color-severe-bg); color: var(--color-severe); }
 .loudness-badge--unset     { background: var(--color-surface); color: var(--color-text-muted); }
 
 /* Amber dot + text shown when loudness has not been recorded */
@@ -268,7 +272,7 @@ input, textarea {
   line-height: 1.25;
   text-align: center;
   margin: 0 auto var(--space-xl);
-  box-shadow: 0 6px 16px rgba(15, 118, 110, 0.5), 0 12px 40px rgba(15, 118, 110, 0.3);
+  box-shadow: 0 6px 16px rgba(var(--color-accent-rgb), 0.5), 0 12px 40px rgba(var(--color-accent-rgb), 0.3);
   transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 
@@ -279,7 +283,7 @@ input, textarea {
 }
 .btn-log:active {
   background: var(--color-accent-dark);
-  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
+  box-shadow: 0 2px 6px rgba(var(--color-accent-rgb), 0.3);
   transform: scale(0.92);
 }
 
@@ -551,7 +555,7 @@ textarea.field-input {
 
 /* Active state for pills that have no colour modifier (period / character / pitch / location / pulsatile).
    The more specific .pill[aria-pressed="true"].pill--mild|moderate|severe rules still win for loudness pills. */
-.pill[aria-pressed="true"] { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+.pill[aria-pressed="true"] { background: var(--color-accent); color: var(--color-white); border-color: var(--color-accent); }
 
 .btn-danger {
   display: block; width: 100%; margin-top: 16px; padding: 12px;
