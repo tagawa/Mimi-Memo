@@ -196,12 +196,6 @@ input, textarea {
   border-color: var(--color-severe);
 }
 
-.pill[aria-pressed="true"].pill--none {
-  background: var(--color-text-secondary);
-  color: var(--color-white);
-  border-color: var(--color-text-secondary);
-}
-
 /* === Loudness Badge (history list) === */
 .loudness-badge {
   display: inline-flex;
@@ -356,17 +350,6 @@ textarea.field-input {
   background: var(--color-border);
 }
 
-/* Brief highlight when a new entry card is created */
-@keyframes entry-highlight {
-  0%, 35% { background: #99f6e4; transform: scaleY(1.04); transform-origin: top; }
-  50%     { transform: scaleY(1); }
-  100%    { background: transparent; }
-}
-
-.entry-card--new {
-  animation: entry-highlight 2.5s ease-out forwards;
-}
-
 /* === Entry Card (home + history list) === */
 .entry-card {
   display: flex;
@@ -451,116 +434,6 @@ textarea.field-input {
   margin: var(--space-sm) auto var(--space-md);
 }
 
-/* === History Chart === */
-.chart-container {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-sm);
-}
-
-.chart-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.chart-period-btns {
-  display: flex;
-  gap: var(--space-xs);
-}
-
-.chart-period-btn {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  color: var(--color-text-muted);
-  min-height: 28px;
-}
-
-.chart-period-btn.active {
-  background: var(--color-accent-bg);
-  color: var(--color-accent);
-}
-
-.chart-period-btn:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* === Doctor Summary === */
-.doctor-controls {
-  position: sticky;
-  top: 0;
-  background: var(--color-white);
-  padding: var(--space-sm) 0 var(--space-md);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-sm);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--space-md);
-  z-index: 10;
-}
-
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
-}
-
-.stat-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--color-accent);
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  margin-top: 2px;
-}
-
-.summary-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-  margin-bottom: var(--space-md);
-}
-
-.summary-table th {
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  text-align: left;
-  padding: var(--space-xs) var(--space-xs);
-  border-bottom: 2px solid var(--color-border);
-}
-
-.summary-table td {
-  padding: var(--space-sm) var(--space-xs);
-  border-bottom: 1px solid var(--color-surface);
-  vertical-align: top;
-}
-
 /* === Empty state === */
 .empty-state {
   text-align: center;
@@ -568,30 +441,6 @@ textarea.field-input {
   color: var(--color-text-muted);
   font-size: 1rem;
   line-height: 2;
-}
-
-/* === Error toast === */
-.toast {
-  position: fixed;
-  top: calc(var(--header-height) + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-6px);
-  background: var(--color-severe);
-  color: var(--color-white);
-  padding: 10px 16px;
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  font-weight: 600;
-  max-width: calc(100% - 32px);
-  z-index: 200;
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  pointer-events: none;
-}
-
-.toast--visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 
 /* === Pressure Strip === */
