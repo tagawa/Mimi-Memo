@@ -14,12 +14,11 @@ function renderView(view) {
   }
 }
 
-function showToast(msg, { assertive = false } = {}) {
-  if (assertive) {
-    const region = document.getElementById('alert-msg');
-    region.textContent = '';
-    setTimeout(() => { region.textContent = msg; }, 0);
-  }
+// Announce an error in the assertive live region (clear-then-set forces re-announcement of repeats).
+function showToast(msg) {
+  const region = document.getElementById('alert-msg');
+  region.textContent = '';
+  setTimeout(() => { region.textContent = msg; }, 0);
 }
 
 function updateStaticI18n() {
@@ -42,7 +41,7 @@ function initLangToggle() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setWriteErrorHandler(() => showToast(t('store.writeError'), { assertive: true }));
+  setWriteErrorHandler(() => showToast(t('store.writeError')));
   updateStaticI18n();
   initRouter(renderView);
   initLangToggle();

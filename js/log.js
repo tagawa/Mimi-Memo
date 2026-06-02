@@ -5,8 +5,6 @@ import {
 } from './store.js';
 
 let onSaved;
-let editingId = null;        // null = just-saved/new sheet; string = editing existing
-let justSavedId = null;      // id of the entry created on Log it (for Undo)
 let triggerElement = null;
 
 // --- Pill group helper ---
@@ -75,8 +73,6 @@ function closeModal() {
   const modal = document.getElementById('log-modal');
   modal.hidden = true;
   document.body.style.overflow = '';
-  editingId = null;
-  justSavedId = null;
   triggerElement?.focus();
   triggerElement = null;
 }
@@ -106,7 +102,6 @@ function detailFieldsHtml(ep) {
 
 // Render the "just saved" sheet for a brand-new entry.
 function renderJustSaved(ep) {
-  justSavedId = ep.id;
   let loudness = ep.loudness;
   document.getElementById('modal-content').innerHTML = `
     <div style="padding:0 16px 24px;">
@@ -117,7 +112,7 @@ function renderJustSaved(ep) {
         <button class="btn-primary" id="sheet-done" style="flex:1;">${t('log.done')}</button>
       </div>
       <div class="divider" style="margin-top:20px;">
-        <button id="optional-toggle" aria-expanded="false" style="color:var(--color-accent); font-weight:600;">${t('log.differentFromUsual')} ▾</button>
+        <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section" style="color:var(--color-accent); font-weight:600;">${t('log.differentFromUsual')} ▾</button>
       </div>
       <div id="optional-section" hidden style="display:flex; flex-direction:column; padding-top:12px;">
         ${detailFieldsHtml(ep)}
@@ -243,7 +238,6 @@ export function logNow() {
 export function openEditLog(id) {
   const ep = getEpisodes().find(e => e.id === id);
   if (!ep) return;
-  editingId = id;
   openModal();
   renderEdit(ep);
 }
