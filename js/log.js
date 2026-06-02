@@ -114,7 +114,7 @@ function renderJustSaved(ep) {
       <div class="divider" style="margin-top:20px;">
         <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section" style="color:var(--color-accent); font-weight:600;">${t('log.differentFromUsual')} ▾</button>
       </div>
-      <div id="optional-section" hidden style="display:flex; flex-direction:column; padding-top:12px;">
+      <div id="optional-section" class="optional-section" hidden>
         ${detailFieldsHtml(ep)}
       </div>
       <button id="sheet-undo" class="btn-danger">${t('log.undo')}</button>
@@ -125,6 +125,10 @@ function renderJustSaved(ep) {
     updateEpisode(ep.id, { loudness });   // persist immediately so Done just closes
   });
 
+  // Bind the detail pills up front so they respond as soon as the section is expanded
+  // (binding hidden elements is fine; the click handler attaches regardless of visibility).
+  bindDetailGroups(ep.id);
+
   const optionalToggle = document.getElementById('optional-toggle');
   optionalToggle.addEventListener('click', e => {
     const section = document.getElementById('optional-section');
@@ -132,7 +136,6 @@ function renderJustSaved(ep) {
     section.hidden = isOpen;
     e.currentTarget.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
     e.currentTarget.textContent = t('log.differentFromUsual') + (isOpen ? ' ▾' : ' ▴');
-    if (!isOpen) bindDetailGroups(ep.id);   // bind only once revealed
   });
 
   document.getElementById('sheet-done').addEventListener('click', () => {

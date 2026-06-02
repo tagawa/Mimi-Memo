@@ -568,3 +568,8 @@ textarea.field-input {
 
 .doctor-summary { margin: 16px 0; line-height: 1.6; }
 .doctor-summary p { margin: 6px 0; }
+
+/* "Different from usual?" collapse. Layout lives here (not inline) so the `hidden`
+   attribute actually hides it — an inline display: declaration would override [hidden]. */
+.optional-section { display: flex; flex-direction: column; padding-top: 12px; }
+.optional-section[hidden] { display: none; }
