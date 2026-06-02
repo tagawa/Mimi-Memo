@@ -712,3 +712,5 @@ textarea.field-input {
 /* Active state for pills that have no colour modifier (period / character / pitch / location / pulsatile).
    The more specific .pill[aria-pressed="true"].pill--mild|moderate|severe rules still win for loudness pills. */
 .pill[aria-pressed="true"] { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+
+.bar-chart { width: 100%; height: 140px; margin: 8px 0 20px; display: block; }
