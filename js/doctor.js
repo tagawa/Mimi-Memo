@@ -1,4 +1,5 @@
-// stats.js has no browser deps, safe to import statically
+import { t, getLang } from './i18n.js';
+import { getEpisodes } from './store.js';
 import { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown } from './stats.js';
 
 let currentPeriod = 30; // 30, 90, or null (all)
@@ -46,11 +47,7 @@ export function summarise(entries, periodDays) {
   };
 }
 
-// Dynamic imports keep browser-dependent modules out of the Node test environment.
-export async function renderDoctor() {
-  const { t, getLang } = await import('./i18n.js');
-  const { getEpisodes } = await import('./store.js');
-
+export function renderDoctor() {
   const view = document.getElementById('view-doctor');
   const s = summarise(getEpisodes(), currentPeriod);
 

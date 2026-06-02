@@ -1,4 +1,16 @@
 import assert from 'node:assert/strict';
+
+// doctor.js statically imports i18n.js/store.js, which touch browser globals at load.
+// Stub them so the module imports cleanly in Node (same pattern as the other test files).
+const ls = new Map();
+globalThis.localStorage = {
+  getItem: k => ls.get(k) ?? null,
+  setItem: (k, v) => ls.set(k, v),
+  removeItem: k => ls.delete(k),
+};
+Object.defineProperty(globalThis, 'navigator', { value: { language: 'en' }, configurable: true, writable: true });
+globalThis.document = { documentElement: {} };
+
 const { summarise } = await import('../js/doctor.js');
 
 const now = new Date();
