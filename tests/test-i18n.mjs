@@ -6,7 +6,7 @@ globalThis.localStorage = {
   setItem: (k, v) => store.set(k, v),
   removeItem: k => store.delete(k),
 };
-globalThis.navigator = { language: 'en' };
+Object.defineProperty(globalThis, 'navigator', { value: { language: 'en' }, configurable: true, writable: true });
 globalThis.document = { documentElement: {} };
 
 const { t, setLang, getLang } = await import('../js/i18n.js');
