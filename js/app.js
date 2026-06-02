@@ -5,6 +5,8 @@ import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { renderDoctor } from './doctor.js';
 import { initLog, logNow, openEditLog } from './log.js';
+import { initWeather } from './weather.js';
+import { renderPressureStrip, renderPressureStripLoading } from './pressure-strip.js';
 
 function renderView(view) {
   switch (view) {
@@ -49,4 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed:', err));
   }
+  renderPressureStripLoading();
+  initWeather().then(renderPressureStrip);
 });
