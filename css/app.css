@@ -1,6 +1,7 @@
 /* === Design Tokens === */
 :root {
   --color-accent:          #0f766e;
+  --color-accent-dark:     #0d5c56;
   --color-accent-bg:       #ccfbf1;
   --color-mild:            #2e7d32;
   --color-moderate:        #b45309;
@@ -153,7 +154,7 @@ input, textarea {
 
 .tab span:first-child { display: flex; align-items: center; justify-content: center; }
 
-/* === Severity Pills (Mild / Moderate / Severe) === */
+/* === Loudness Pills (Mild / Moderate / Severe) === */
 .pill-group {
   display: flex;
   gap: var(--space-sm);
@@ -201,7 +202,7 @@ input, textarea {
   border-color: var(--color-text-secondary);
 }
 
-/* === Severity Badge (history list) === */
+/* === Loudness Badge (history list) === */
 .loudness-badge {
   display: inline-flex;
   align-items: center;
@@ -219,7 +220,7 @@ input, textarea {
 .loudness-badge--severe   { background: #fee2e2; color: var(--color-severe); }
 .loudness-badge--unset     { background: var(--color-surface); color: var(--color-text-muted); }
 
-/* Amber dot + text shown when dizziness severity has not been recorded */
+/* Amber dot + text shown when loudness has not been recorded */
 .entry-needs-details {
   color: var(--color-moderate);
   font-weight: 600;
@@ -255,7 +256,7 @@ input, textarea {
   outline-offset: 2px;
 }
 
-.btn-primary:active { background: #0d5c56; }
+.btn-primary:active { background: var(--color-accent-dark); }
 
 /* Circular primary action button (home screen) */
 .btn-log {
@@ -283,7 +284,7 @@ input, textarea {
   outline-offset: 4px;
 }
 .btn-log:active {
-  background: #0d5c56;
+  background: var(--color-accent-dark);
   box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
   transform: scale(0.92);
 }
@@ -355,7 +356,7 @@ textarea.field-input {
   background: var(--color-border);
 }
 
-/* Brief highlight when a new episode card is created */
+/* Brief highlight when a new entry card is created */
 @keyframes entry-highlight {
   0%, 35% { background: #99f6e4; transform: scaleY(1.04); transform-origin: top; }
   50%     { transform: scaleY(1); }
@@ -366,7 +367,7 @@ textarea.field-input {
   animation: entry-highlight 2.5s ease-out forwards;
 }
 
-/* === Episode Card (home + history list) === */
+/* === Entry Card (home + history list) === */
 .entry-card {
   display: flex;
   align-items: center;
@@ -699,19 +700,15 @@ textarea.field-input {
   color: var(--color-text-secondary);
 }
 
-/* === Print styles === */
-@media print {
-  .app-header, .tab-bar, .doctor-controls { display: none !important; }
-  #views { overflow: visible; }
-  .view { position: static; overflow: visible; padding: 0; }
-  #view-doctor { display: block !important; }
-  .summary-table td, .summary-table th { border-color: #ccc; }
-  .modal { display: none !important; }
-}
-
 /* Active state for pills that have no colour modifier (period / character / pitch / location / pulsatile).
    The more specific .pill[aria-pressed="true"].pill--mild|moderate|severe rules still win for loudness pills. */
 .pill[aria-pressed="true"] { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+
+.btn-danger {
+  display: block; width: 100%; margin-top: 16px; padding: 12px;
+  color: var(--color-severe); font-weight: 600; background: none;
+  border: 1.5px solid var(--color-severe); border-radius: var(--radius-md);
+}
 
 .bar-chart { width: 100%; height: 140px; margin: 8px 0 20px; display: block; }
 

@@ -22,7 +22,7 @@ function entrySummary(ep) {
   const parts = [];
   if (ep.character) parts.push(t('log.' + ep.character));
   if (ep.location) parts.push(t('log.' + ep.location));
-  return parts.join(' · ') || t('log.noLoudness');
+  return parts.join(' · ');
 }
 
 export function renderHome(onLogClick, onEntryClick) {

@@ -117,7 +117,7 @@ function renderJustSaved(ep) {
       <div id="optional-section" hidden style="display:flex; flex-direction:column; padding-top:12px;">
         ${detailFieldsHtml(ep)}
       </div>
-      <button id="sheet-undo" style="display:block; width:100%; margin-top:16px; padding:12px; color:var(--color-severe); font-weight:600; border:1.5px solid var(--color-severe); border-radius:var(--radius-md);">${t('log.undo')}</button>
+      <button id="sheet-undo" class="btn-danger">${t('log.undo')}</button>
     </div>`;
 
   bindPillGroup(document.getElementById('loudness-group'), '.pill', v => {
@@ -184,7 +184,7 @@ function renderEdit(ep) {
       <div id="loudness-group">${makePillGroup('log.loudness', LOUDNESS_LABELS, ep.loudness)}</div>
       <div style="margin-top:16px">${detailFieldsHtml(ep)}</div>
       <button class="btn-primary" id="modal-save" style="margin-top:20px;">${t('log.save')}</button>
-      <button id="modal-delete" style="display:block; width:100%; margin-top:16px; padding:12px; color:var(--color-severe); font-weight:600; border:1.5px solid var(--color-severe); border-radius:var(--radius-md);">${t('log.delete')}</button>
+      <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
     </div>`;
 
   let loudness = ep.loudness, character = ep.character, pitch = ep.pitch, location = ep.location;
