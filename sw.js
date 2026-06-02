@@ -1,4 +1,4 @@
-const CACHE = 'mimi-v6';
+const CACHE = 'mimi-v7';
 const SHELL = [
   '/',
   '/index.html',

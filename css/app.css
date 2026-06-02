@@ -716,3 +716,6 @@ textarea.field-input {
   .tab-bar, .app-header, .pressure-strip, #doctor-print, .pill-group { display: none !important; }
   #view-doctor { display: block !important; }
 }
+
+.doctor-summary { margin: 16px 0; line-height: 1.6; }
+.doctor-summary p { margin: 6px 0; }

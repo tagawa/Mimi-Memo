@@ -2,6 +2,7 @@ const strings = {
   en: {
     appName: 'Mimi Memo',
     'nav.home': 'Home', 'nav.history': 'History', 'nav.doctor': 'Doctor',
+    'aria.nav': 'Main navigation',
     'home.logButton': 'Log it', 'home.recent': 'Recent',
     'home.empty': 'No entries yet', 'home.seeAll': 'See all',
     'log.title': 'Log tinnitus', 'log.editTitle': 'Edit entry', 'log.startTime': 'Time',
@@ -33,6 +34,7 @@ const strings = {
   ja: {
     appName: 'ミミメモ',
     'nav.home': 'ホーム', 'nav.history': '履歴', 'nav.doctor': '医師用',
+    'aria.nav': 'メインナビゲーション',
     'home.logButton': '記録する', 'home.recent': '最近の記録',
     'home.empty': 'まだ記録がありません', 'home.seeAll': 'すべて見る',
     'log.title': '耳鳴りを記録', 'log.editTitle': '記録を編集', 'log.startTime': '時刻',
