@@ -202,7 +202,7 @@ input, textarea {
 }
 
 /* === Severity Badge (history list) === */
-.severity-badge {
+.loudness-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -214,17 +214,17 @@ input, textarea {
   flex-shrink: 0;
 }
 
-.severity-badge--mild     { background: #dcfce7; color: var(--color-mild); }
-.severity-badge--moderate { background: #fef3c7; color: var(--color-moderate); }
-.severity-badge--severe   { background: #fee2e2; color: var(--color-severe); }
-.severity-badge--none     { background: var(--color-surface); color: var(--color-text-muted); }
+.loudness-badge--mild     { background: #dcfce7; color: var(--color-mild); }
+.loudness-badge--moderate { background: #fef3c7; color: var(--color-moderate); }
+.loudness-badge--severe   { background: #fee2e2; color: var(--color-severe); }
+.loudness-badge--unset     { background: var(--color-surface); color: var(--color-text-muted); }
 
 /* Amber dot + text shown when dizziness severity has not been recorded */
-.episode-needs-details {
+.entry-needs-details {
   color: var(--color-moderate);
   font-weight: 600;
 }
-.episode-needs-details::before {
+.entry-needs-details::before {
   content: '';
   display: inline-block;
   width: 6px;
@@ -356,18 +356,18 @@ textarea.field-input {
 }
 
 /* Brief highlight when a new episode card is created */
-@keyframes episode-highlight {
+@keyframes entry-highlight {
   0%, 35% { background: #99f6e4; transform: scaleY(1.04); transform-origin: top; }
   50%     { transform: scaleY(1); }
   100%    { background: transparent; }
 }
 
-.episode-card--new {
-  animation: episode-highlight 2.5s ease-out forwards;
+.entry-card--new {
+  animation: entry-highlight 2.5s ease-out forwards;
 }
 
 /* === Episode Card (home + history list) === */
-.episode-card {
+.entry-card {
   display: flex;
   align-items: center;
   gap: var(--space-md);
@@ -380,21 +380,21 @@ textarea.field-input {
   text-align: left;
 }
 
-.episode-card:focus-visible {
+.entry-card:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: -3px;
 }
 
-.episode-card-body { flex: 1; overflow: hidden; }
+.entry-card-body { flex: 1; overflow: hidden; }
 
-.episode-card-date {
+.entry-card-date {
   display: block;
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text);
 }
 
-.episode-card-summary {
+.entry-card-summary {
   display: block;
   font-size: 0.8rem;
   color: var(--color-text-muted);
@@ -404,7 +404,7 @@ textarea.field-input {
   text-overflow: ellipsis;
 }
 
-.episode-card-arrow {
+.entry-card-arrow {
   color: var(--color-border);
   font-size: 1.2rem;
   flex-shrink: 0;
@@ -708,3 +708,7 @@ textarea.field-input {
   .summary-table td, .summary-table th { border-color: #ccc; }
   .modal { display: none !important; }
 }
+
+/* Active state for pills that have no colour modifier (period / character / pitch / location / pulsatile).
+   The more specific .pill[aria-pressed="true"].pill--mild|moderate|severe rules still win for loudness pills. */
+.pill[aria-pressed="true"] { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
