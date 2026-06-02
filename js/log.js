@@ -52,7 +52,7 @@ const CHARACTER_LABELS = [
   { value: 'other',   i18nKey: 'log.other' },
 ];
 const PITCH_LABELS = [
-  { value: 'high', i18nKey: 'log.high' }, { value: 'low', i18nKey: 'log.low' }, { value: 'mixed', i18nKey: 'log.mixed' },
+  { value: 'low', i18nKey: 'log.low' }, { value: 'high', i18nKey: 'log.high' }, { value: 'mixed', i18nKey: 'log.mixed' },
 ];
 const LOCATION_LABELS = [
   { value: 'left', i18nKey: 'log.left' }, { value: 'right', i18nKey: 'log.right' },
