@@ -20,7 +20,7 @@ assert.deepStrictEqual(getEpisodes(), [], 'empty store returns []');
 // createEpisode shape
 reset();
 const e = createEpisode();
-assert.ok(/^[0-9a-f-]{36}$/.test(e.id), 'has uuid');
+assert.ok(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(e.id), 'has uuid v4');
 assert.equal(e.schemaVersion, 1, 'schemaVersion 1');
 assert.ok(typeof e.startTime === 'string', 'startTime is ISO string');
 assert.equal(e.loudness, null, 'loudness null by default');
@@ -49,7 +49,7 @@ assert.equal(updateEpisode('missing-id', { loudness: 'mild' }), false, 'update m
 reset();
 const c = createEpisode();
 addEpisode(c);
-deleteEpisode(c.id);
+assert.equal(deleteEpisode(c.id), true, 'deleteEpisode returns true on success');
 assert.equal(getEpisodes().length, 0);
 
 // defaultsFromLast copies character/pitch/location but NOT pulsatile/loudness/notes
@@ -83,15 +83,19 @@ reset();
 addEpisode(createEpisode());
 assert.equal(getEpisodes()[0].pulsatile, null, 'pulsatile null by default');
 
-// write failure (e.g. quota exceeded): addEpisode returns false and fires the error handler
+// write failure (e.g. quota exceeded): every saveAll-based op returns false and fires the handler
 reset();
-let errorFired = false;
-setWriteErrorHandler(() => { errorFired = true; });
+const existing = createEpisode();
+addEpisode(existing);                 // succeeds before we break setItem
+let errorCount = 0;
+setWriteErrorHandler(() => { errorCount++; });
 const realSetItem = globalThis.localStorage.setItem;
 globalThis.localStorage.setItem = () => { throw new Error('QuotaExceededError'); };
 assert.equal(addEpisode(createEpisode()), false, 'addEpisode returns false on write failure');
-assert.equal(errorFired, true, 'write error handler fires on write failure');
+assert.equal(updateEpisode(existing.id, { loudness: 'mild' }), false, 'updateEpisode returns false on write failure');
+assert.equal(deleteEpisode(existing.id), false, 'deleteEpisode returns false on write failure');
+assert.equal(errorCount, 3, 'write error handler fires for each failed write');
 globalThis.localStorage.setItem = realSetItem;   // restore
-setWriteErrorHandler(() => {});                   // reset handler for any later tests
+setWriteErrorHandler(null);                       // remove handler for any later tests
 
 console.log('test-store: all tests passed');
