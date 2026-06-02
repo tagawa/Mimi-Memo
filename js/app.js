@@ -4,12 +4,21 @@ import { setWriteErrorHandler } from './store.js';
 import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { renderDoctor } from './doctor.js';
+import { initLog, logNow, openEditLog } from './log.js';
 
 function renderView(view) {
   switch (view) {
-    case 'home': renderHome(); break;
-    case 'history': renderHistory(); break;
+    case 'home': renderHome(logNow, openEditLog); break;
+    case 'history': renderHistory(openEditLog); break;
     case 'doctor': renderDoctor(); break;
+  }
+}
+
+function showToast(msg, { assertive = false } = {}) {
+  if (assertive) {
+    const region = document.getElementById('alert-msg');
+    region.textContent = '';
+    setTimeout(() => { region.textContent = msg; }, 0);
   }
 }
 
@@ -33,10 +42,11 @@ function initLangToggle() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setWriteErrorHandler(() => {});
+  setWriteErrorHandler(() => showToast(t('store.writeError'), { assertive: true }));
   updateStaticI18n();
   initRouter(renderView);
   initLangToggle();
+  initLog(() => renderView(document.querySelector('.tab.active')?.dataset.view ?? 'home'));
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed:', err));
   }
