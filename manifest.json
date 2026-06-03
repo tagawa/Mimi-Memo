@@ -3,6 +3,7 @@
   "short_name": "Mimi Memo",
   "description": "Track your tinnitus and spot patterns.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f766e",
