@@ -48,19 +48,18 @@ export function createEpisode(fields = {}) {
     character: null,
     pitch: null,
     location: null,
-    pulsatile: null,   // deliberately never defaulted from a previous entry
+    pulsatile: null,
     notes: null,
     ...fields,
   };
 }
 
-// Returns { character, pitch, location } from the most recent entry by startTime.
-// Deliberately excludes pulsatile (clinical red-flag — must be answered per entry),
-// loudness and notes (per-event variables). Returns {} when there are no entries.
+// Returns { character, pitch, location, pulsatile } from the most recent entry by startTime.
+// Excludes loudness and notes (per-event variables). Returns {} when there are no entries.
 export function defaultsFromLast() {
   const episodes = getEpisodes();
   if (episodes.length === 0) return {};
   const last = episodes.reduce((a, b) =>
     new Date(b.startTime) > new Date(a.startTime) ? b : a);
-  return { character: last.character, pitch: last.pitch, location: last.location };
+  return { character: last.character, pitch: last.pitch, location: last.location, pulsatile: last.pulsatile };
 }

@@ -40,6 +40,7 @@ function initLangToggle() {
     updateBtn();
     updateStaticI18n();
     renderView(document.querySelector('.tab.active')?.dataset.view ?? 'home');
+    renderPressureStrip(); // pressure strip is outside view-home, so needs its own re-render
   });
 }
 

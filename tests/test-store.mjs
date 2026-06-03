@@ -52,7 +52,7 @@ addEpisode(c);
 assert.equal(deleteEpisode(c.id), true, 'deleteEpisode returns true on success');
 assert.equal(getEpisodes().length, 0);
 
-// defaultsFromLast copies character/pitch/location but NOT pulsatile/loudness/notes
+// defaultsFromLast copies character/pitch/location/pulsatile but NOT loudness/notes
 reset();
 assert.deepStrictEqual(defaultsFromLast(), {}, 'no entries -> empty defaults');
 addEpisode(createEpisode({
@@ -66,9 +66,8 @@ addEpisode(createEpisode({
   location: 'left', pulsatile: false, notes: 'newest',
 }));
 const d = defaultsFromLast();
-assert.deepStrictEqual(d, { character: 'hissing', pitch: 'low', location: 'left' },
-  'defaults come from the most recent entry, only character/pitch/location');
-assert.ok(!('pulsatile' in d), 'pulsatile never carried forward');
+assert.deepStrictEqual(d, { character: 'hissing', pitch: 'low', location: 'left', pulsatile: false },
+  'defaults come from the most recent entry: character/pitch/location/pulsatile');
 assert.ok(!('loudness' in d), 'loudness never carried forward');
 assert.ok(!('notes' in d), 'notes never carried forward');
 
