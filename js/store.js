@@ -61,7 +61,7 @@ export function createEpisode(fields = {}) {
 }
 
 // Returns { character, pitch, location, pulsatile } from the most recent entry by startTime.
-// Excludes loudness and notes (per-event variables). Returns {} when there are no entries.
+// Excludes loudness, notes, and trigger fields (per-event variables). Returns {} when there are no entries.
 export function defaultsFromLast() {
   const episodes = getEpisodes();
   if (episodes.length === 0) return {};
