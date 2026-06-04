@@ -43,7 +43,6 @@ const strings = {
     'doctor.print': 'Print', 'doctor.totalEntries': 'Total entries', 'doctor.loudnessBreakdown': 'Loudness',
     'doctor.topCharacter': 'Most common sound', 'doctor.topPitch': 'Most common pitch', 'doctor.topLocation': 'Most common location',
     'doctor.peakTime': 'Most frequent time', 'doctor.peakDay': 'Most frequent day',
-    'pressure.today': 'Today',
     'store.writeError': 'Could not save — storage may be full.',
   },
   ja: {
@@ -90,7 +89,6 @@ const strings = {
     'doctor.print': '印刷', 'doctor.totalEntries': '記録数', 'doctor.loudnessBreakdown': '大きさの内訳',
     'doctor.topCharacter': '最も多い音', 'doctor.topPitch': '最も多い高さ', 'doctor.topLocation': '最も多い場所',
     'doctor.peakTime': '最も多い時間帯', 'doctor.peakDay': '最も多い曜日',
-    'pressure.today': '今日',
     'store.writeError': '保存できませんでした。ストレージがいっぱいかもしれません。',
   },
 };

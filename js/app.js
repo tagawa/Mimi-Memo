@@ -5,8 +5,6 @@ import { renderHome } from './home.js';
 import { renderHistory } from './history.js';
 import { renderDoctor } from './doctor.js';
 import { initLog, logNow, openEditLog } from './log.js';
-import { initWeather } from './weather.js';
-import { renderPressureStrip, renderPressureStripLoading } from './pressure-strip.js';
 
 function renderView(view) {
   switch (view) {
@@ -40,7 +38,7 @@ function initLangToggle() {
     updateBtn();
     updateStaticI18n();
     renderView(document.querySelector('.tab.active')?.dataset.view ?? 'home');
-    renderPressureStrip(); // pressure strip is outside view-home, so needs its own re-render
+
   });
 }
 
@@ -53,6 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed:', err));
   }
-  renderPressureStripLoading();
-  initWeather().then(renderPressureStrip);
+
 });

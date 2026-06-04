@@ -1,4 +1,4 @@
-const CACHE = 'mimi-v17';
+const CACHE = 'mimi-v18';
 const SHELL = [
   '/',
   '/index.html',
@@ -13,8 +13,7 @@ const SHELL = [
   '/js/doctor.js',
   '/js/log.js',
   '/js/stats.js',
-  '/js/weather.js',
-  '/js/pressure-strip.js',
+
   '/icons/icon-192.png',
   '/icons/icon-512.png',
 ];
