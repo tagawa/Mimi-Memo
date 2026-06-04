@@ -329,7 +329,7 @@ function persistDetailFieldsIfPresent(id) {
   if (Object.keys(updates).length) updateEpisode(id, updates);
 }
 
-// Edit mode for an existing entry: full two-section form, all 10 fields, plus delete.
+// Edit mode for an existing entry: full two-section form, all 11 fields, plus delete.
 function renderEdit(ep) {
   const aboutExpanded = shouldAboutStartExpanded(ep, false);
   document.getElementById('modal-content').innerHTML = `
