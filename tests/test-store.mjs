@@ -21,7 +21,7 @@ assert.deepStrictEqual(getEpisodes(), [], 'empty store returns []');
 reset();
 const e = createEpisode();
 assert.ok(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(e.id), 'has uuid v4');
-assert.equal(e.schemaVersion, 1, 'schemaVersion 1');
+assert.equal(e.schemaVersion, 2, 'schemaVersion 2');
 assert.ok(typeof e.startTime === 'string', 'startTime is ISO string');
 assert.equal(e.loudness, null, 'loudness null by default');
 assert.equal(e.character, null);
@@ -96,5 +96,38 @@ assert.equal(deleteEpisode(existing.id), false, 'deleteEpisode returns false on 
 assert.equal(errorCount, 3, 'write error handler fires for each failed write');
 globalThis.localStorage.setItem = realSetItem;   // restore
 setWriteErrorHandler(null);                       // remove handler for any later tests
+
+// schemaVersion 2 and new fields present with null defaults
+reset();
+const newEp = createEpisode();
+assert.equal(newEp.schemaVersion, 2, 'schemaVersion is 2');
+assert.equal(newEp.stress, null, 'stress null by default');
+assert.equal(newEp.tiredness, null, 'tiredness null by default');
+assert.equal(newEp.position, null, 'position null by default');
+assert.equal(newEp.surroundingNoise, null, 'surroundingNoise null by default');
+assert.equal(newEp.alcoholTiming, null, 'alcoholTiming null by default');
+assert.equal(newEp.caffeineTiming, null, 'caffeineTiming null by default');
+
+// new fields can be set via fields argument
+const withTriggers = createEpisode({ stress: 'high', position: 'lying', alcoholTiming: 'within4h' });
+assert.equal(withTriggers.stress, 'high');
+assert.equal(withTriggers.position, 'lying');
+assert.equal(withTriggers.alcoholTiming, 'within4h');
+
+// new fields are NOT carried forward by defaultsFromLast
+reset();
+addEpisode(createEpisode({
+  startTime: '2026-06-04T10:00:00.000Z',
+  character: 'ringing', pitch: 'high', location: 'left', pulsatile: false,
+  stress: 'high', tiredness: 'medium', position: 'lying',
+  surroundingNoise: 'quiet', alcoholTiming: 'within4h', caffeineTiming: 'notInPast12h',
+}));
+const defs = defaultsFromLast();
+assert.ok(!('stress' in defs), 'stress not carried forward');
+assert.ok(!('tiredness' in defs), 'tiredness not carried forward');
+assert.ok(!('position' in defs), 'position not carried forward');
+assert.ok(!('surroundingNoise' in defs), 'surroundingNoise not carried forward');
+assert.ok(!('alcoholTiming' in defs), 'alcoholTiming not carried forward');
+assert.ok(!('caffeineTiming' in defs), 'caffeineTiming not carried forward');
 
 console.log('test-store: all tests passed');
