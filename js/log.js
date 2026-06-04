@@ -157,17 +157,17 @@ function rightNowHtml(ep) {
         <p class="cluster-label">${t('log.internalState')}</p>
         <p class="section-label">${t('log.stress')}</p>
         <div id="stress-group">${makePillGroup('log.stress', STRESS_LABELS, ep.stress)}</div>
-        <p class="section-label" style="margin-top:12px">${t('log.tiredness')}</p>
+        <p class="section-label">${t('log.tiredness')}</p>
         <div id="tiredness-group">${makePillGroup('log.tiredness', TIREDNESS_LABELS, ep.tiredness)}</div>
         <p class="cluster-label">${t('log.environment')}</p>
         <p class="section-label">${t('log.position')}</p>
         <div id="position-group">${makePillGroup('log.position', POSITION_LABELS, ep.position)}</div>
-        <p class="section-label" style="margin-top:12px">${t('log.surroundingNoise')}</p>
+        <p class="section-label">${t('log.surroundingNoise')}</p>
         <div id="noise-group">${makePillGroup('log.surroundingNoise', NOISE_LABELS, ep.surroundingNoise)}</div>
         <p class="cluster-label">${t('log.recentIntake')}</p>
         <p class="section-label">${t('log.alcoholTiming')}</p>
         <div id="alcohol-group">${makePillGroup('log.alcoholTiming', ALCOHOL_LABELS, ep.alcoholTiming)}</div>
-        <p class="section-label" style="margin-top:12px">${t('log.caffeineTiming')}</p>
+        <p class="section-label">${t('log.caffeineTiming')}</p>
         <div id="caffeine-group">${makePillGroup('log.caffeineTiming', CAFFEINE_LABELS, ep.caffeineTiming)}</div>
       </div>
     </div>`;
@@ -200,11 +200,11 @@ function aboutTinnitusHtml(ep, startExpanded, showFromLastTime) {
       <div id="about-content" class="subsection-content" ${startExpanded ? '' : 'hidden'}>
         <p class="section-label">${t('log.character')}</p>
         <div id="character-group">${makePillGroup('log.character', CHARACTER_LABELS, ep.character)}</div>
-        <div style="margin-top:16px"><p class="section-label">${t('log.pitch')}</p>
+        <div class="pill-section"><p class="section-label">${t('log.pitch')}</p>
           <div id="pitch-group">${makePillGroup('log.pitch', PITCH_LABELS, ep.pitch)}</div></div>
-        <div style="margin-top:16px"><p class="section-label">${t('log.location')}</p>
+        <div class="pill-section"><p class="section-label">${t('log.location')}</p>
           <div id="location-group">${makePillGroup('log.location', LOCATION_LABELS, ep.location)}</div></div>
-        <div style="margin-top:16px"><p class="section-label">${t('log.pulsatile')}</p>
+        <div class="pill-section"><p class="section-label">${t('log.pulsatile')}</p>
           <div id="pulsatile-group">${makePillGroup('log.pulsatile', PULSATILE_LABELS,
             ep.pulsatile === true ? 'yes' : ep.pulsatile === false ? 'no' : null)}</div></div>
       </div>
@@ -214,10 +214,10 @@ function aboutTinnitusHtml(ep, startExpanded, showFromLastTime) {
 // Notes field, always at the bottom of the expanded form.
 function notesHtml(ep) {
   return `
-    <div style="border-top:1px solid var(--color-border); padding-top:16px; margin-top:16px;">
+    <div class="notes-section">
       <label class="section-label" for="notes">${t('log.notes')}</label>
       <textarea id="notes" class="field-input" placeholder="${t('log.notesPlaceholder')}"
-          style="margin-top:8px;">${ep.notes ?? ''}</textarea>
+          >${ep.notes ?? ''}</textarea>
     </div>`;
 }
 
@@ -227,16 +227,16 @@ function renderJustSaved(ep, isFirstEver) {
   const aboutExpanded = shouldAboutStartExpanded(ep, isFirstEver);
 
   document.getElementById('modal-content').innerHTML = `
-    <div style="padding:0 16px 24px;">
-      <h2 id="log-modal-title" style="font-size:1.25rem; font-weight:700; margin-bottom:4px;">${t('log.saved')}</h2>
+    <div class="modal-body">
+      <h2 id="log-modal-title" class="modal-title">${t('log.saved')}</h2>
       <p class="section-label">${t('log.loudness')}</p>
       <div id="loudness-group">${makePillGroup('log.loudness', LOUDNESS_LABELS, ep.loudness)}</div>
-      <div style="display:flex; gap:12px; margin-top:20px;">
-        <button class="btn-primary" id="sheet-done" style="flex:1;">${t('log.done')}</button>
+      <div class="modal-actions">
+        <button class="btn-primary" id="sheet-done">${t('log.done')}</button>
       </div>
-      <div class="divider" style="margin-top:20px;">
-        <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section"
-            style="color:var(--color-accent); font-weight:600;">${t('log.addDetails')} &#x25be;</button>
+      <div class="divider">
+        <button id="optional-toggle" class="optional-toggle" aria-expanded="false" aria-controls="optional-section"
+            >${t('log.addDetails')} &#x25be;</button>
       </div>
       <div id="optional-section" class="optional-section" hidden>
         ${rightNowHtml(ep)}
@@ -333,11 +333,11 @@ function persistDetailFieldsIfPresent(id) {
 function renderEdit(ep) {
   const aboutExpanded = shouldAboutStartExpanded(ep, false);
   document.getElementById('modal-content').innerHTML = `
-    <div style="padding:0 16px 24px;">
-      <h2 id="log-modal-title" style="font-size:1.25rem; font-weight:700; margin-bottom:12px;">${t('log.editTitle')}</h2>
-      <div class="field" style="flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:16px;">
+    <div class="modal-body">
+      <h2 id="log-modal-title" class="modal-title modal-title--edit">${t('log.editTitle')}</h2>
+      <div class="field field--stacked">
         <label class="field-label" for="start-time">${t('log.startTime')}</label>
-        <input type="datetime-local" id="start-time" class="field-input" style="width:100%;"
+        <input type="datetime-local" id="start-time" class="field-input field-input--full"
             value="${toDatetimeLocal(ep.startTime)}" />
       </div>
       <p class="section-label">${t('log.loudness')}</p>
@@ -345,7 +345,7 @@ function renderEdit(ep) {
       ${rightNowHtml(ep)}
       ${aboutTinnitusHtml(ep, aboutExpanded, false)}
       ${notesHtml(ep)}
-      <button class="btn-primary" id="modal-save" style="margin-top:20px;">${t('log.save')}</button>
+      <button class="btn-primary" id="modal-save">${t('log.save')}</button>
       <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
     </div>`;
 

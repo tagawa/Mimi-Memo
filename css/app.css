@@ -638,3 +638,44 @@ textarea.field-input {
   font-style: italic;
   font-size: 0.75rem;
 }
+
+/* === Log Modal Sheet === */
+.modal-body { padding: 0 var(--space-md) var(--space-lg); }
+
+.modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+.modal-title--edit { margin-bottom: 12px; }
+
+.modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+.modal-actions > .btn-primary { flex: 1; }
+.modal-actions + .divider { margin-top: 20px; }
+
+.optional-toggle { color: var(--color-accent); font-weight: 600; }
+
+.notes-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-md);
+  margin-top: var(--space-md);
+}
+.notes-section textarea { margin-top: var(--space-sm); }
+
+/* Wrappers for second+ pill groups within about-tinnitus section */
+.pill-section { margin-top: var(--space-md); }
+
+/* Gap before second+ section-label within a subsection cluster */
+.subsection-content > div + .section-label { margin-top: 12px; }
+
+/* Edit-mode datetime field overrides */
+.field--stacked { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: var(--space-md); }
+.field-input--full { width: 100%; }
+
+#modal-save { margin-top: 20px; }
+
+/* Screen-reader only (visually hidden) */
+.sr-only {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
