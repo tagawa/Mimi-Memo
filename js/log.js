@@ -222,8 +222,10 @@ function notesHtml(ep) {
 }
 
 // Render the "just saved" sheet for a brand-new entry.
-function renderJustSaved(ep) {
+function renderJustSaved(ep, isFirstEver) {
   let loudness = ep.loudness;
+  const aboutExpanded = shouldAboutStartExpanded(ep, isFirstEver);
+
   document.getElementById('modal-content').innerHTML = `
     <div style="padding:0 16px 24px;">
       <h2 id="log-modal-title" style="font-size:1.25rem; font-weight:700; margin-bottom:4px;">${t('log.saved')}</h2>
@@ -233,10 +235,13 @@ function renderJustSaved(ep) {
         <button class="btn-primary" id="sheet-done" style="flex:1;">${t('log.done')}</button>
       </div>
       <div class="divider" style="margin-top:20px;">
-        <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section" style="color:var(--color-accent); font-weight:600;">${t('log.differentFromUsual')} ▾</button>
+        <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section"
+            style="color:var(--color-accent); font-weight:600;">${t('log.addDetails')} &#x25be;</button>
       </div>
-      <div id="optional-section" class="optional-section" hidden>
-        ${detailFieldsHtml(ep)}
+      <div id="optional-section" hidden>
+        ${rightNowHtml(ep)}
+        ${aboutTinnitusHtml(ep, aboutExpanded, true)}
+        ${notesHtml(ep)}
       </div>
       <button id="sheet-undo" class="btn-danger">${t('log.undo')}</button>
     </div>`;
@@ -246,18 +251,22 @@ function renderJustSaved(ep) {
     updateEpisode(ep.id, { loudness });   // persist immediately so Done just closes
   });
 
-  // Bind the detail pills up front so they respond as soon as the section is expanded
-  // (binding hidden elements is fine; the click handler attaches regardless of visibility).
+  // Bind all pill groups up front — works even when sections are hidden
   bindDetailGroups(ep.id);
 
+  // Outer "Add details" toggle
   const optionalToggle = document.getElementById('optional-toggle');
   optionalToggle.addEventListener('click', e => {
     const section = document.getElementById('optional-section');
     const isOpen = !section.hidden;
     section.hidden = isOpen;
     e.currentTarget.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-    e.currentTarget.textContent = t('log.differentFromUsual') + (isOpen ? ' ▾' : ' ▴');
+    e.currentTarget.textContent = t('log.addDetails') + (isOpen ? ' ▾' : ' ▴');
   });
+
+  // Inner subsection toggles — bindSubsectionToggle manages expand/collapse + summary visibility
+  bindSubsectionToggle('right-now-toggle', 'right-now-content');
+  bindSubsectionToggle('about-toggle', 'about-content', 'about-summary');
 
   document.getElementById('sheet-done').addEventListener('click', () => {
     persistDetailFieldsIfPresent(ep.id);
@@ -273,9 +282,14 @@ function renderJustSaved(ep) {
   });
 }
 
-// Bind the detail pill groups for the given entry (character/pitch/location/pulsatile).
+// Bind the detail pill groups for the given entry — covers all ten pill groups.
 function bindDetailGroups(id) {
-  [['character-group', 'character'], ['pitch-group', 'pitch'], ['location-group', 'location']].forEach(([groupId, field]) => {
+  // About the Tinnitus groups
+  [
+    ['character-group', 'character'],
+    ['pitch-group', 'pitch'],
+    ['location-group', 'location'],
+  ].forEach(([groupId, field]) => {
     const el = document.getElementById(groupId);
     if (el && !el.dataset.bound) {
       el.dataset.bound = '1';
@@ -285,8 +299,24 @@ function bindDetailGroups(id) {
   const pulse = document.getElementById('pulsatile-group');
   if (pulse && !pulse.dataset.bound) {
     pulse.dataset.bound = '1';
-    bindPillGroup(pulse, '.pill', v => updateEpisode(id, { pulsatile: v === 'yes' ? true : v === 'no' ? false : null }));
+    bindPillGroup(pulse, '.pill', v =>
+      updateEpisode(id, { pulsatile: v === 'yes' ? true : v === 'no' ? false : null }));
   }
+  // Right Now groups — all auto-persist immediately on tap
+  [
+    ['stress-group',    'stress'],
+    ['tiredness-group', 'tiredness'],
+    ['position-group',  'position'],
+    ['noise-group',     'surroundingNoise'],
+    ['alcohol-group',   'alcoholTiming'],
+    ['caffeine-group',  'caffeineTiming'],
+  ].forEach(([groupId, field]) => {
+    const el = document.getElementById(groupId);
+    if (el && !el.dataset.bound) {
+      el.dataset.bound = '1';
+      bindPillGroup(el, '.pill', v => updateEpisode(id, { [field]: v }));
+    }
+  });
 }
 
 // Read the free-text/time fields (not auto-persisted on tap) and save them.
@@ -352,11 +382,12 @@ export function initLog(onSavedCallback) {
 
 // Called by the Log it button: save instantly, then show the just-saved sheet.
 export function logNow() {
+  const isFirstEver = getEpisodes().length === 0; // check BEFORE adding the new entry
   const ep = createEpisode(defaultsFromLast());
   addEpisode(ep);
   onSaved?.();              // refresh home list immediately
   openModal();
-  renderJustSaved(ep);
+  renderJustSaved(ep, isFirstEver);
 }
 
 export function openEditLog(id) {
