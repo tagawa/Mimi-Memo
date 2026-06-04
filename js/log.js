@@ -52,7 +52,9 @@ const CHARACTER_LABELS = [
   { value: 'other',   i18nKey: 'log.other' },
 ];
 const PITCH_LABELS = [
-  { value: 'low', i18nKey: 'log.low' }, { value: 'high', i18nKey: 'log.high' }, { value: 'mixed', i18nKey: 'log.mixed' },
+  { value: 'low', i18nKey: 'log.pitchLow' },
+  { value: 'high', i18nKey: 'log.pitchHigh' },
+  { value: 'mixed', i18nKey: 'log.mixed' },
 ];
 const LOCATION_LABELS = [
   { value: 'left', i18nKey: 'log.left' }, { value: 'right', i18nKey: 'log.right' },
@@ -60,6 +62,38 @@ const LOCATION_LABELS = [
 ];
 const PULSATILE_LABELS = [
   { value: 'no', i18nKey: 'log.no' }, { value: 'yes', i18nKey: 'log.yes' },
+];
+
+// --- Trigger field label arrays ---
+const STRESS_LABELS = [
+  { value: 'low',    i18nKey: 'log.stressLow' },
+  { value: 'medium', i18nKey: 'log.stressMedium' },
+  { value: 'high',   i18nKey: 'log.stressHigh' },
+];
+const TIREDNESS_LABELS = [
+  { value: 'low',    i18nKey: 'log.tirednessLow' },
+  { value: 'medium', i18nKey: 'log.tirednessMedium' },
+  { value: 'high',   i18nKey: 'log.tirednessHigh' },
+];
+const POSITION_LABELS = [
+  { value: 'lying',    i18nKey: 'log.lying' },
+  { value: 'sitting',  i18nKey: 'log.sitting' },
+  { value: 'standing', i18nKey: 'log.standing' },
+];
+const NOISE_LABELS = [
+  { value: 'quiet',  i18nKey: 'log.noiseQuiet' },
+  { value: 'medium', i18nKey: 'log.noiseMedium' },
+  { value: 'loud',   i18nKey: 'log.noiseLoud' },
+];
+const ALCOHOL_LABELS = [
+  { value: 'within4h',     i18nKey: 'log.within4h' },
+  { value: 'fourTo12h',    i18nKey: 'log.fourTo12h' },
+  { value: 'notInPast12h', i18nKey: 'log.notInPast12h' },
+];
+const CAFFEINE_LABELS = [
+  { value: 'within4h',     i18nKey: 'log.within4h' },
+  { value: 'fourTo12h',    i18nKey: 'log.fourTo12h' },
+  { value: 'notInPast12h', i18nKey: 'log.notInPast12h' },
 ];
 
 function openModal() {
