@@ -117,20 +117,107 @@ function toDatetimeLocal(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// Full detail form fields for a given episode (shared markup).
-function detailFieldsHtml(ep) {
+// Builds the collapsed summary for the "About the Tinnitus" section header.
+// Null fields are omitted; pulsatile=false is omitted (absence isn't notable).
+function buildAboutSummary(ep) {
+  const parts = [];
+  if (ep.character) parts.push(t(`log.${ep.character}`));
+  const pitchLabel = PITCH_LABELS.find(l => l.value === ep.pitch);
+  if (pitchLabel) parts.push(t(pitchLabel.i18nKey));
+  if (ep.location) parts.push(t(`log.${ep.location}`));
+  if (ep.pulsatile === true) parts.push(t('log.pulsatileLabel')); // false omitted — absence of pulsing isn't notable
+  return parts.length ? parts.join(' · ') : t('log.notSet');
+}
+
+// Toggle a subsection open/closed; optionally show/hide a summary element.
+// Chevron uses string literals (textContent); entities used in innerHTML template strings above.
+function bindSubsectionToggle(toggleId, contentId, summaryId = null) {
+  const toggle = document.getElementById(toggleId);
+  const content = document.getElementById(contentId);
+  const summaryEl = summaryId ? document.getElementById(summaryId) : null;
+  if (!toggle || !content) return;
+  toggle.addEventListener('click', () => {
+    const nowExpanded = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(nowExpanded));
+    content.hidden = !nowExpanded;
+    toggle.querySelector('.chevron').textContent = nowExpanded ? '▴' : '▾';
+    if (summaryEl) summaryEl.hidden = nowExpanded; // hidden alone removes from a11y tree
+  });
+}
+
+// "Right Now" sub-section: six trigger fields, always starts expanded.
+function rightNowHtml(ep) {
   return `
-    <div class="field" style="flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:20px;">
-      <label class="field-label" for="start-time">${t('log.startTime')}</label>
-      <input type="datetime-local" id="start-time" class="field-input" style="width:100%;" value="${toDatetimeLocal(ep.startTime)}" />
-    </div>
-    <div><p class="section-label">${t('log.character')}</p><div id="character-group">${makePillGroup('log.character', CHARACTER_LABELS, ep.character)}</div></div>
-    <div style="margin-top:16px"><p class="section-label">${t('log.pitch')}</p><div id="pitch-group">${makePillGroup('log.pitch', PITCH_LABELS, ep.pitch)}</div></div>
-    <div style="margin-top:16px"><p class="section-label">${t('log.location')}</p><div id="location-group">${makePillGroup('log.location', LOCATION_LABELS, ep.location)}</div></div>
-    <div style="margin-top:16px"><p class="section-label">${t('log.pulsatile')}</p><div id="pulsatile-group">${makePillGroup('log.pulsatile', PULSATILE_LABELS, ep.pulsatile === true ? 'yes' : ep.pulsatile === false ? 'no' : null)}</div></div>
+    <div class="subsection">
+      <button type="button" class="subsection-header" aria-expanded="true"
+          aria-controls="right-now-content" id="right-now-toggle">
+        <span>${t('log.rightNow')}</span><span class="chevron" aria-hidden="true">&#x25b4;</span>
+      </button>
+      <div id="right-now-content" class="subsection-content">
+        <p class="cluster-label">${t('log.internalState')}</p>
+        <p class="section-label">${t('log.stress')}</p>
+        <div id="stress-group">${makePillGroup('log.stress', STRESS_LABELS, ep.stress)}</div>
+        <p class="section-label" style="margin-top:12px">${t('log.tiredness')}</p>
+        <div id="tiredness-group">${makePillGroup('log.tiredness', TIREDNESS_LABELS, ep.tiredness)}</div>
+        <p class="cluster-label">${t('log.environment')}</p>
+        <p class="section-label">${t('log.position')}</p>
+        <div id="position-group">${makePillGroup('log.position', POSITION_LABELS, ep.position)}</div>
+        <p class="section-label" style="margin-top:12px">${t('log.surroundingNoise')}</p>
+        <div id="noise-group">${makePillGroup('log.surroundingNoise', NOISE_LABELS, ep.surroundingNoise)}</div>
+        <p class="cluster-label">${t('log.recentIntake')}</p>
+        <p class="section-label">${t('log.alcoholTiming')}</p>
+        <div id="alcohol-group">${makePillGroup('log.alcoholTiming', ALCOHOL_LABELS, ep.alcoholTiming)}</div>
+        <p class="section-label" style="margin-top:12px">${t('log.caffeineTiming')}</p>
+        <div id="caffeine-group">${makePillGroup('log.caffeineTiming', CAFFEINE_LABELS, ep.caffeineTiming)}</div>
+      </div>
+    </div>`;
+}
+
+// Determines whether "About the Tinnitus" should start expanded.
+// Starts expanded on first-ever log (isFirstEver) and when any field is still null.
+function shouldAboutStartExpanded(ep, isFirstEver) {
+  if (isFirstEver) return true;
+  return ep.character === null || ep.pitch === null || ep.location === null || ep.pulsatile === null;
+}
+
+// "About the Tinnitus" sub-section: four existing fields.
+// showFromLastTime: true in just-saved sheet (values came from defaults), false in edit mode.
+// The about-summary element carries both the field summary and the "from last time" badge so
+// both hide/show together when the section is toggled — bindSubsectionToggle manages one element.
+function aboutTinnitusHtml(ep, startExpanded, showFromLastTime) {
+  const summary = buildAboutSummary(ep);
+  const summaryContent = showFromLastTime && !startExpanded
+    ? `${summary} · <em>${t('log.fromLastTime')}</em>`
+    : summary;
+  return `
+    <div class="subsection">
+      <button type="button" class="subsection-header" aria-expanded="${startExpanded}"
+          aria-controls="about-content" id="about-toggle">
+        <span>${t('log.aboutTinnitus')}</span>
+        <span class="chevron" aria-hidden="true">${startExpanded ? '&#x25b4;' : '&#x25be;'}</span>
+      </button>
+      <p id="about-summary" class="subsection-summary" ${startExpanded ? 'hidden' : ''}>${summaryContent}</p>
+      <div id="about-content" class="subsection-content" ${startExpanded ? '' : 'hidden'}>
+        <p class="section-label">${t('log.character')}</p>
+        <div id="character-group">${makePillGroup('log.character', CHARACTER_LABELS, ep.character)}</div>
+        <div style="margin-top:16px"><p class="section-label">${t('log.pitch')}</p>
+          <div id="pitch-group">${makePillGroup('log.pitch', PITCH_LABELS, ep.pitch)}</div></div>
+        <div style="margin-top:16px"><p class="section-label">${t('log.location')}</p>
+          <div id="location-group">${makePillGroup('log.location', LOCATION_LABELS, ep.location)}</div></div>
+        <div style="margin-top:16px"><p class="section-label">${t('log.pulsatile')}</p>
+          <div id="pulsatile-group">${makePillGroup('log.pulsatile', PULSATILE_LABELS,
+            ep.pulsatile === true ? 'yes' : ep.pulsatile === false ? 'no' : null)}</div></div>
+      </div>
+    </div>`;
+}
+
+// Notes field, always at the bottom of the expanded form.
+function notesHtml(ep) {
+  return `
     <div style="border-top:1px solid var(--color-border); padding-top:16px; margin-top:16px;">
       <label class="section-label" for="notes">${t('log.notes')}</label>
-      <textarea id="notes" class="field-input" placeholder="${t('log.notesPlaceholder')}" style="margin-top:8px;">${ep.notes ?? ''}</textarea>
+      <textarea id="notes" class="field-input" placeholder="${t('log.notesPlaceholder')}"
+          style="margin-top:8px;">${ep.notes ?? ''}</textarea>
     </div>`;
 }
 
