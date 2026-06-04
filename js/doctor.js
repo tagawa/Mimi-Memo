@@ -72,7 +72,7 @@ export function renderDoctor() {
       <p><strong>${t('doctor.loudnessBreakdown')}:</strong>
          ${t('log.mild')} ${s.loudness.mild} · ${t('log.moderate')} ${s.loudness.moderate} · ${t('log.severe')} ${s.loudness.severe}</p>
       ${row('doctor.topCharacter', s.topCharacter && t('log.' + s.topCharacter))}
-      ${row('doctor.topPitch', s.topPitch && t('log.' + s.topPitch))}
+      ${row('doctor.topPitch', s.topPitch && (s.topPitch === 'low' ? t('log.pitchLow') : s.topPitch === 'high' ? t('log.pitchHigh') : s.topPitch ? t('log.mixed') : ''))}
       ${row('doctor.topLocation', s.topLocation && t('log.' + s.topLocation))}
       ${row('doctor.peakTime', s.peakTimeOfDay && t('history.' + s.peakTimeOfDay))}
       ${row('doctor.peakDay', s.peakDayOfWeek != null ? weekdayName(s.peakDayOfWeek) : null)}
