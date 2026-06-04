@@ -329,31 +329,53 @@ function persistDetailFieldsIfPresent(id) {
   if (Object.keys(updates).length) updateEpisode(id, updates);
 }
 
-// Edit mode for an existing entry: full form, including loudness, plus delete.
+// Edit mode for an existing entry: full two-section form, all 10 fields, plus delete.
 function renderEdit(ep) {
+  const aboutExpanded = shouldAboutStartExpanded(ep, false);
   document.getElementById('modal-content').innerHTML = `
     <div style="padding:0 16px 24px;">
       <h2 id="log-modal-title" style="font-size:1.25rem; font-weight:700; margin-bottom:12px;">${t('log.editTitle')}</h2>
+      <div class="field" style="flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:16px;">
+        <label class="field-label" for="start-time">${t('log.startTime')}</label>
+        <input type="datetime-local" id="start-time" class="field-input" style="width:100%;"
+            value="${toDatetimeLocal(ep.startTime)}" />
+      </div>
       <p class="section-label">${t('log.loudness')}</p>
       <div id="loudness-group">${makePillGroup('log.loudness', LOUDNESS_LABELS, ep.loudness)}</div>
-      <div style="margin-top:16px">${detailFieldsHtml(ep)}</div>
+      ${rightNowHtml(ep)}
+      ${aboutTinnitusHtml(ep, aboutExpanded, false)}
+      ${notesHtml(ep)}
       <button class="btn-primary" id="modal-save" style="margin-top:20px;">${t('log.save')}</button>
       <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
     </div>`;
 
-  let loudness = ep.loudness, character = ep.character, pitch = ep.pitch, location = ep.location;
-  let pulsatile = ep.pulsatile;
+  let loudness = ep.loudness;
+  let character = ep.character, pitch = ep.pitch, location = ep.location, pulsatile = ep.pulsatile;
+  let stress = ep.stress, tiredness = ep.tiredness, position = ep.position;
+  let surroundingNoise = ep.surroundingNoise, alcoholTiming = ep.alcoholTiming, caffeineTiming = ep.caffeineTiming;
+
   bindPillGroup(document.getElementById('loudness-group'), '.pill', v => { loudness = v; });
   bindPillGroup(document.getElementById('character-group'), '.pill', v => { character = v; });
   bindPillGroup(document.getElementById('pitch-group'), '.pill', v => { pitch = v; });
   bindPillGroup(document.getElementById('location-group'), '.pill', v => { location = v; });
-  bindPillGroup(document.getElementById('pulsatile-group'), '.pill', v => { pulsatile = v === 'yes' ? true : v === 'no' ? false : null; });
+  bindPillGroup(document.getElementById('pulsatile-group'), '.pill',
+    v => { pulsatile = v === 'yes' ? true : v === 'no' ? false : null; });
+  bindPillGroup(document.getElementById('stress-group'), '.pill', v => { stress = v; });
+  bindPillGroup(document.getElementById('tiredness-group'), '.pill', v => { tiredness = v; });
+  bindPillGroup(document.getElementById('position-group'), '.pill', v => { position = v; });
+  bindPillGroup(document.getElementById('noise-group'), '.pill', v => { surroundingNoise = v; });
+  bindPillGroup(document.getElementById('alcohol-group'), '.pill', v => { alcoholTiming = v; });
+  bindPillGroup(document.getElementById('caffeine-group'), '.pill', v => { caffeineTiming = v; });
+
+  bindSubsectionToggle('right-now-toggle', 'right-now-content');
+  bindSubsectionToggle('about-toggle', 'about-content', 'about-summary');
 
   document.getElementById('modal-save').addEventListener('click', () => {
     const startInput = document.getElementById('start-time');
     const notesInput = document.getElementById('notes');
     updateEpisode(ep.id, {
       loudness, character, pitch, location, pulsatile,
+      stress, tiredness, position, surroundingNoise, alcoholTiming, caffeineTiming,
       startTime: startInput?.value ? new Date(startInput.value).toISOString() : ep.startTime,
       notes: notesInput?.value.trim() || null,
     });
