@@ -136,13 +136,15 @@ function bindSubsectionToggle(toggleId, contentId, summaryId = null) {
   const content = document.getElementById(contentId);
   const summaryEl = summaryId ? document.getElementById(summaryId) : null;
   if (!toggle || !content) return;
-  toggle.addEventListener('click', () => {
+  const doToggle = () => {
     const nowExpanded = toggle.getAttribute('aria-expanded') !== 'true';
     toggle.setAttribute('aria-expanded', String(nowExpanded));
     content.hidden = !nowExpanded;
     toggle.querySelector('.chevron').textContent = nowExpanded ? '▴' : '▾';
     if (summaryEl) summaryEl.hidden = nowExpanded; // hidden alone removes from a11y tree
-  });
+  };
+  toggle.addEventListener('click', doToggle);
+  if (summaryEl) summaryEl.addEventListener('click', doToggle);
 }
 
 // "Right Now" sub-section: six trigger fields, always starts expanded.
