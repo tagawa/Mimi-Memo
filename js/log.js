@@ -238,7 +238,7 @@ function renderJustSaved(ep, isFirstEver) {
         <button id="optional-toggle" aria-expanded="false" aria-controls="optional-section"
             style="color:var(--color-accent); font-weight:600;">${t('log.addDetails')} &#x25be;</button>
       </div>
-      <div id="optional-section" hidden>
+      <div id="optional-section" class="optional-section" hidden>
         ${rightNowHtml(ep)}
         ${aboutTinnitusHtml(ep, aboutExpanded, true)}
         ${notesHtml(ep)}
