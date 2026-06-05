@@ -62,6 +62,7 @@ export function triggerContext(entries) {
     const counts = {};
     for (const e of recorded) counts[e[def.field]] = (counts[e[def.field]] ?? 0) + 1;
     const maxCount = Math.max(...def.values.map(v => counts[v] ?? 0));
+    if (maxCount === 0) continue; // all recorded values are outside the expected enum
     const topValue = def.values.find(v => (counts[v] ?? 0) === maxCount);
     result.push({
       field: def.field,

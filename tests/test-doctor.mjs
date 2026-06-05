@@ -58,6 +58,9 @@ assert(Math.abs(sRate30.frequencyRate - 2 / (30 / 7)) < 0.01, '30-day frequency 
 // zero entries → null (suppressed)
 assert.equal(summarise([], 30).frequencyRate, null, 'frequencyRate null when no entries');
 
+// entries exist but all outside the 30-day window → scoped is empty → null
+assert.equal(summarise([daysAgo(45)], 30).frequencyRate, null, 'frequencyRate null when all entries outside period');
+
 // all-time, 1 entry from 14 days ago → span ≥ 7d → rate ≈ 0.5
 const sRate14 = summarise([daysAgo(14)], null);
 assert(Math.abs(sRate14.frequencyRate - 0.5) < 0.1, 'all-time frequencyRate with 14-day span');

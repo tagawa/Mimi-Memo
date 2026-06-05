@@ -73,4 +73,13 @@ assert.equal(t('log.stress'), 'ストレス');
 assert.equal(t('log.rightNow'), '今の状況');
 setLang('en');
 
+// doctor.* keys added in Task 1
+assert.equal(t('doctor.frequencyRate'), 'Frequency');
+assert.equal(t('doctor.perWeek'), 'per week');
+assert.equal(t('doctor.pulsatileValue'), '{count} episodes ({pct}%)');
+assert.equal(t('doctor.pulsatileValueSparse'), '{count} episodes ({pct}% of {recorded} recorded)');
+assert.equal(t('doctor.triggerContext'), 'Trigger context');
+assert.equal(t('doctor.inPctOfRecorded'), 'in {pct}% of recorded episodes');
+assert.equal(t('doctor.sparseNote'), '({n} of {m} recorded)');
+
 console.log('test-i18n: all tests passed');
