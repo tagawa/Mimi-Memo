@@ -34,16 +34,17 @@ function loudnessBadge(ep) {
 // reliably announced under role="img"); visible <text> remains for sighted users.
 function barChart(data, label) {
   const max = Math.max(1, ...data.map(d => d.value));
-  const bw = 100 / data.length;
+  // viewBox is 270×100 (≈ iPhone aspect ratio) so uniform scaling keeps text un-squashed.
+  const bw = 270 / data.length;
   const bars = data.map((d, i) => {
     const h = (d.value / max) * 80;
     const x = i * bw + bw * 0.15;
     const w = bw * 0.7;
     return `<rect x="${x}" y="${90 - h}" width="${w}" height="${h}" fill="var(--color-accent)" rx="1"/>
-            <text x="${x + w/2}" y="98" font-size="4.5" text-anchor="middle" fill="#666">${d.label}</text>
+            <text x="${x + w/2}" y="98" font-size="9" text-anchor="middle" fill="#666">${d.label}</text>
             <text x="${x + w/2}" y="${88 - h}" font-size="4.5" text-anchor="middle" fill="#666">${d.value || ''}</text>`;
   }).join('');
-  return `<svg viewBox="0 0 100 100" class="bar-chart" role="img" aria-label="${label}" preserveAspectRatio="none">${bars}</svg>`;
+  return `<svg viewBox="0 0 270 100" class="bar-chart" role="img" aria-label="${label}">${bars}</svg>`;
 }
 
 export function renderHistory(onEntryClick) {
