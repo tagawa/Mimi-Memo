@@ -72,6 +72,31 @@ export function renderDoctor() {
   const weekdayName = idx => new Date(2024, 0, 1 + idx).toLocaleDateString(locale, { weekday: 'long' });
   const row = (labelKey, value) => value ? `<p><strong>${t(labelKey)}:</strong> ${value}</p>` : '';
 
+  const pulsatileRow = (() => {
+    if (s.pulsatile.count === 0) return '';
+    // pulsatile footnote: show on any sparsity (recorded < total)
+    const key = s.pulsatile.recorded < s.total
+      ? 'doctor.pulsatileValueSparse'
+      : 'doctor.pulsatileValue';
+    const val = t(key)
+      .replace('{count}', s.pulsatile.count)
+      .replace('{pct}', s.pulsatile.pct)
+      .replace('{recorded}', s.pulsatile.recorded);
+    return `<p><strong>${t('log.pulsatileLabel')}:</strong> ${val}</p>`;
+  })();
+
+  const triggerSection = s.triggers.length === 0 ? '' : `
+    <h3>${t('doctor.triggerContext')}</h3>
+    ${s.triggers.map(tr => {
+      const pctPhrase = t('doctor.inPctOfRecorded').replace('{pct}', tr.topPct);
+      // trigger sparse footnote: only when coverage < 50% (Approach C)
+      const note = tr.recorded < tr.total * 0.5
+        ? ' ' + t('doctor.sparseNote').replace('{n}', tr.recorded).replace('{m}', tr.total)
+        : '';
+      return `<p><strong>${t(tr.labelKey)}:</strong> ${t(tr.valueKey)} ${pctPhrase}${note}</p>`;
+    }).join('\n    ')}
+  `;
+
   view.innerHTML = `
     <h2 class="section-label">${t('doctor.title')}</h2>
     <div class="pill-group" role="group" aria-label="${t('doctor.period')}">
@@ -81,13 +106,16 @@ export function renderDoctor() {
     </div>
     <div class="doctor-summary">
       <p><strong>${t('doctor.totalEntries')}:</strong> ${s.total}</p>
+      ${s.frequencyRate != null ? `<p><strong>${t('doctor.frequencyRate')}:</strong> ${s.frequencyRate.toFixed(1)} ${t('doctor.perWeek')}</p>` : ''}
       <p><strong>${t('doctor.loudnessBreakdown')}:</strong>
          ${t('log.mild')} ${s.loudness.mild} · ${t('log.moderate')} ${s.loudness.moderate} · ${t('log.severe')} ${s.loudness.severe}</p>
+      ${pulsatileRow}
       ${row('doctor.topCharacter', s.topCharacter && t('log.' + s.topCharacter))}
       ${row('doctor.topPitch', s.topPitch && (s.topPitch === 'low' ? t('log.pitchLow') : s.topPitch === 'high' ? t('log.pitchHigh') : s.topPitch ? t('log.mixed') : ''))}
       ${row('doctor.topLocation', s.topLocation && t('log.' + s.topLocation))}
       ${row('doctor.peakTime', s.peakTimeOfDay && t('history.' + s.peakTimeOfDay))}
       ${row('doctor.peakDay', s.peakDayOfWeek != null ? weekdayName(s.peakDayOfWeek) : null)}
+      ${triggerSection}
     </div>
     <button class="btn-primary" id="doctor-print">${t('doctor.print')}</button>
   `;
