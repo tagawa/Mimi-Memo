@@ -1,6 +1,6 @@
 import { t, getLang } from './i18n.js';
 import { getEpisodes } from './store.js';
-import { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown } from './stats.js';
+import { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, pulsatileStats, triggerContext } from './stats.js';
 
 let currentPeriod = 30; // 30, 90, or null (all)
 
@@ -34,9 +34,20 @@ export function summarise(entries, periodDays) {
     return max > 0 ? dayOfWeek.indexOf(max) : null;   // 0 = Monday .. 6 = Sunday
   })();
 
+  const frequencyRate = (() => {
+    if (scoped.length === 0) return null;
+    if (periodDays != null) return scoped.length / (periodDays / 7);
+    const earliest = Math.min(...scoped.map(e => new Date(e.startTime).getTime()));
+    const spanDays = (Date.now() - earliest) / 86400000;
+    // Suppress when span is too short to be meaningful
+    return spanDays < 7 ? null : scoped.length / (spanDays / 7);
+  })();
+
   return {
     total: scoped.length,
+    frequencyRate,
     loudness,
+    pulsatile: pulsatileStats(scoped),
     topCharacter: topOf('character'),
     topPitch: topOf('pitch'),
     topLocation: topOf('location'),
@@ -44,6 +55,7 @@ export function summarise(entries, periodDays) {
     peakDayOfWeek,
     timeOfDay,
     dayOfWeek,
+    triggers: triggerContext(scoped),
   };
 }
 
