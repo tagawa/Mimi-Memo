@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay } = await import('../js/stats.js');
+const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay, pulsatileStats } = await import('../js/stats.js');
 
 function ep(startTime, loudness = null) { return { startTime, loudness }; }
 
@@ -27,5 +27,38 @@ assert.deepStrictEqual(lb, { mild: 2, moderate: 0, severe: 1 }, 'loudness breakd
 const perDay = entriesPerDay([ ep('2026-06-01T10:00:00'), ep('2026-06-01T20:00:00'), ep('2026-06-02T10:00:00') ]);
 assert.equal(perDay['2026-06-01'], 2);
 assert.equal(perDay['2026-06-02'], 1);
+
+// ── pulsatileStats ────────────────────────────────────────────────────────────
+
+// empty input
+assert.deepStrictEqual(pulsatileStats([]), { count: 0, recorded: 0, pct: 0 }, 'pulsatile: empty');
+
+// all null → treated as not recorded
+assert.deepStrictEqual(
+  pulsatileStats([{ pulsatile: null }, { pulsatile: null }]),
+  { count: 0, recorded: 0, pct: 0 },
+  'pulsatile: all null'
+);
+
+// mixed true / false / null
+assert.deepStrictEqual(
+  pulsatileStats([{ pulsatile: true }, { pulsatile: false }, { pulsatile: null }]),
+  { count: 1, recorded: 2, pct: 50 },
+  'pulsatile: mixed'
+);
+
+// all true
+assert.deepStrictEqual(
+  pulsatileStats([{ pulsatile: true }, { pulsatile: true }]),
+  { count: 2, recorded: 2, pct: 100 },
+  'pulsatile: all true'
+);
+
+// all false → count 0, pct 0
+assert.deepStrictEqual(
+  pulsatileStats([{ pulsatile: false }]),
+  { count: 0, recorded: 1, pct: 0 },
+  'pulsatile: all false'
+);
 
 console.log('test-stats: all tests passed');

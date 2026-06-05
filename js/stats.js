@@ -40,3 +40,14 @@ export function entriesPerDay(entries) {
   }
   return out;
 }
+
+// count of pulsatile===true entries; recorded excludes null/undefined.
+export function pulsatileStats(entries) {
+  let count = 0, recorded = 0;
+  for (const e of entries) {
+    if (e.pulsatile == null) continue;
+    recorded++;
+    if (e.pulsatile === true) count++;
+  }
+  return { count, recorded, pct: recorded > 0 ? Math.round(count / recorded * 100) : 0 };
+}
