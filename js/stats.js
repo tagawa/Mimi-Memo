@@ -41,6 +41,41 @@ export function entriesPerDay(entries) {
   return out;
 }
 
+const cap = s => s[0].toUpperCase() + s.slice(1);
+const TRIGGER_FIELDS = [
+  { field: 'stress',           values: ['low','medium','high'],                 labelKey: 'log.stress',           valueKey: v => `log.stress${cap(v)}` },
+  { field: 'tiredness',        values: ['low','medium','high'],                 labelKey: 'log.tiredness',        valueKey: v => `log.tiredness${cap(v)}` },
+  { field: 'position',         values: ['lying','sitting','standing'],          labelKey: 'log.position',         valueKey: v => `log.${v}` },
+  { field: 'surroundingNoise', values: ['quiet','medium','loud'],               labelKey: 'log.surroundingNoise', valueKey: v => `log.noise${cap(v)}` },
+  { field: 'alcoholTiming',    values: ['within4h','fourTo12h','notInPast12h'], labelKey: 'log.alcoholTiming',    valueKey: v => `log.${v}` },
+  { field: 'caffeineTiming',   values: ['within4h','fourTo12h','notInPast12h'], labelKey: 'log.caffeineTiming',   valueKey: v => `log.${v}` },
+];
+
+// Returns [] when entries is empty or all trigger fields are entirely null.
+// Tie-breaking: first value in enum order wins.
+export function triggerContext(entries) {
+  const total = entries.length;
+  const result = [];
+  for (const def of TRIGGER_FIELDS) {
+    const recorded = entries.filter(e => e[def.field] != null);
+    if (recorded.length === 0) continue;
+    const counts = {};
+    for (const e of recorded) counts[e[def.field]] = (counts[e[def.field]] ?? 0) + 1;
+    const maxCount = Math.max(...def.values.map(v => counts[v] ?? 0));
+    const topValue = def.values.find(v => (counts[v] ?? 0) === maxCount);
+    result.push({
+      field: def.field,
+      labelKey: def.labelKey,
+      topValue,
+      valueKey: def.valueKey(topValue),
+      topPct: Math.round(counts[topValue] / recorded.length * 100),
+      recorded: recorded.length,
+      total,
+    });
+  }
+  return result;
+}
+
 // count of pulsatile===true entries; recorded excludes null/undefined.
 export function pulsatileStats(entries) {
   let count = 0, recorded = 0;

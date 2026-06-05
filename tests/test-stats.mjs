@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay, pulsatileStats } = await import('../js/stats.js');
+const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay, pulsatileStats, triggerContext } = await import('../js/stats.js');
 
 function ep(startTime, loudness = null) { return { startTime, loudness }; }
 
@@ -60,5 +60,58 @@ assert.deepStrictEqual(
   { count: 0, recorded: 1, pct: 0 },
   'pulsatile: all false'
 );
+
+// ── triggerContext ────────────────────────────────────────────────────────────
+
+// helper: entry with all trigger fields null by default
+function trig(stress = null, tiredness = null, position = null,
+               surroundingNoise = null, alcoholTiming = null, caffeineTiming = null) {
+  return { stress, tiredness, position, surroundingNoise, alcoholTiming, caffeineTiming };
+}
+
+// empty input → []
+assert.deepStrictEqual(triggerContext([]), [], 'triggerContext: empty input');
+
+// all null → []
+assert.deepStrictEqual(triggerContext([trig()]), [], 'triggerContext: all null');
+
+// single field with data → one item, correct shape
+const r1 = triggerContext([trig('high')]);
+assert.equal(r1.length, 1, 'one field with data');
+assert.equal(r1[0].field, 'stress');
+assert.equal(r1[0].topValue, 'high');
+assert.equal(r1[0].topPct, 100);
+assert.equal(r1[0].recorded, 1);
+assert.equal(r1[0].total, 1);
+assert.equal(r1[0].labelKey, 'log.stress');
+assert.equal(r1[0].valueKey, 'log.stressHigh');
+
+// tie-breaking: stress low=1, high=1 → picks 'low' (first in enum order)
+const r2 = triggerContext([trig('low'), trig('high')]);
+assert.equal(r2[0].topValue, 'low', 'tie-breaking: first by enum order');
+
+// sparse field: recorded=1, total=3 — renderer decides on footnote using these values
+const r3 = triggerContext([trig('high'), trig(), trig()]);
+assert.equal(r3[0].recorded, 1);
+assert.equal(r3[0].total, 3);
+
+// position uses direct log.* key (no prefix transform)
+const r4 = triggerContext([trig(null, null, 'lying')]);
+assert.equal(r4[0].field, 'position');
+assert.equal(r4[0].valueKey, 'log.lying');
+
+// surroundingNoise uses log.noise* prefix
+const r5 = triggerContext([trig(null, null, null, 'quiet')]);
+assert.equal(r5[0].valueKey, 'log.noiseQuiet');
+
+// alcoholTiming uses direct log.* key
+const r6 = triggerContext([trig(null, null, null, null, 'within4h')]);
+assert.equal(r6[0].valueKey, 'log.within4h');
+
+// all six fields present → six items in display order
+const r7 = triggerContext([trig('high', 'low', 'sitting', 'quiet', 'within4h', 'fourTo12h')]);
+assert.equal(r7.length, 6);
+assert.equal(r7[0].field, 'stress');
+assert.equal(r7[5].field, 'caffeineTiming');
 
 console.log('test-stats: all tests passed');
