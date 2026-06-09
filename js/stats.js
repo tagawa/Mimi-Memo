@@ -30,12 +30,15 @@ export function loudnessBreakdown(entries) {
   return b;
 }
 
+function localDateKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+
 // Map of local YYYY-MM-DD -> count.
 export function entriesPerDay(entries) {
   const out = {};
   for (const e of entries) {
-    const d = new Date(e.startTime);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const key = localDateKey(new Date(e.startTime));
     out[key] = (out[key] ?? 0) + 1;
   }
   return out;
