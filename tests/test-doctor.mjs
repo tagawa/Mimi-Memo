@@ -74,7 +74,7 @@ assert.equal(sRate1.frequencyRate, null, 'all-time frequencyRate suppressed when
 function epFull(n, pulsatile = null) {
   const e = daysAgo(n);
   return { ...e, pulsatile, stress: null, tiredness: null, position: null,
-           surroundingNoise: null, alcoholTiming: null, caffeineTiming: null };
+           surroundingNoise: null, sleepQuality: null };
 }
 
 const sPulse0 = summarise([epFull(1, null), epFull(2, null)], null);
@@ -91,7 +91,7 @@ assert.equal(sPulseMix.pulsatile.pct, 50);
 function epStress(n, stress) {
   const e = daysAgo(n);
   return { ...e, pulsatile: null, stress, tiredness: null, position: null,
-           surroundingNoise: null, alcoholTiming: null, caffeineTiming: null };
+           surroundingNoise: null, sleepQuality: null };
 }
 
 const sTrig = summarise([epStress(1, 'high'), epStress(2, 'high'), epStress(3, 'low')], null);
