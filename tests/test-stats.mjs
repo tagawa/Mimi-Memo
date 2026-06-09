@@ -65,8 +65,8 @@ assert.deepStrictEqual(
 
 // helper: entry with all trigger fields null by default
 function trig(stress = null, tiredness = null, position = null,
-               surroundingNoise = null, alcoholTiming = null, caffeineTiming = null) {
-  return { stress, tiredness, position, surroundingNoise, alcoholTiming, caffeineTiming };
+               surroundingNoise = null, sleepQuality = null) {
+  return { stress, tiredness, position, surroundingNoise, sleepQuality };
 }
 
 // empty input → []
@@ -104,15 +104,17 @@ assert.equal(r4[0].valueKey, 'log.lying');
 const r5 = triggerContext([trig(null, null, null, 'quiet')]);
 assert.equal(r5[0].valueKey, 'log.noiseQuiet');
 
-// alcoholTiming uses direct log.* key
-const r6 = triggerContext([trig(null, null, null, null, 'within4h')]);
-assert.equal(r6[0].valueKey, 'log.within4h');
+// sleepQuality uses direct log.* key
+const r6 = triggerContext([trig(null, null, null, null, 'poor')]);
+assert.equal(r6[0].field, 'sleepQuality');
+assert.equal(r6[0].valueKey, 'log.poor');
+assert.equal(r6[0].labelKey, 'log.sleepQuality');
 
-// all six fields present → six items in display order
-const r7 = triggerContext([trig('high', 'low', 'sitting', 'quiet', 'within4h', 'fourTo12h')]);
-assert.equal(r7.length, 6);
+// all five fields present → five items in display order
+const r7 = triggerContext([trig('high', 'low', 'sitting', 'quiet', 'fair')]);
+assert.equal(r7.length, 5);
 assert.equal(r7[0].field, 'stress');
-assert.equal(r7[5].field, 'caffeineTiming');
+assert.equal(r7[4].field, 'sleepQuality');
 
 // ── sameDaySleepQuality ───────────────────────────────────────────────────────
 const { sameDaySleepQuality } = await import('../js/stats.js');

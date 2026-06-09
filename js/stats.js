@@ -46,12 +46,11 @@ export function entriesPerDay(entries) {
 
 const cap = s => s[0].toUpperCase() + s.slice(1);
 const TRIGGER_FIELDS = [
-  { field: 'stress',           values: ['low','medium','high'],                 labelKey: 'log.stress',           valueKey: v => `log.stress${cap(v)}` },
-  { field: 'tiredness',        values: ['low','medium','high'],                 labelKey: 'log.tiredness',        valueKey: v => `log.tiredness${cap(v)}` },
-  { field: 'position',         values: ['lying','sitting','standing'],          labelKey: 'log.position',         valueKey: v => `log.${v}` },
-  { field: 'surroundingNoise', values: ['quiet','medium','loud'],               labelKey: 'log.surroundingNoise', valueKey: v => `log.noise${cap(v)}` },
-  { field: 'alcoholTiming',    values: ['within4h','fourTo12h','notInPast12h'], labelKey: 'log.alcoholTiming',    valueKey: v => `log.${v}` },
-  { field: 'caffeineTiming',   values: ['within4h','fourTo12h','notInPast12h'], labelKey: 'log.caffeineTiming',   valueKey: v => `log.${v}` },
+  { field: 'stress',           values: ['low','medium','high'],        labelKey: 'log.stress',           valueKey: v => `log.stress${cap(v)}` },
+  { field: 'tiredness',        values: ['low','medium','high'],        labelKey: 'log.tiredness',        valueKey: v => `log.tiredness${cap(v)}` },
+  { field: 'position',         values: ['lying','sitting','standing'], labelKey: 'log.position',         valueKey: v => `log.${v}` },
+  { field: 'surroundingNoise', values: ['quiet','medium','loud'],      labelKey: 'log.surroundingNoise', valueKey: v => `log.noise${cap(v)}` },
+  { field: 'sleepQuality',     values: ['poor','fair','good'],         labelKey: 'log.sleepQuality',     valueKey: v => `log.${v}` },
 ];
 
 // Returns [] when entries is empty or all trigger fields are entirely null.
