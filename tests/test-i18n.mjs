@@ -37,7 +37,7 @@ assert.equal(t('log.rightNow'), 'Right now');
 assert.equal(t('log.aboutTinnitus'), 'About the tinnitus');
 assert.equal(t('log.internalState'), 'Internal state');
 assert.equal(t('log.environment'), 'Environment');
-assert.equal(t('log.recentIntake'), 'Recent intake');
+assert.equal(t('log.recentIntake'), 'log.recentIntake', 'log.recentIntake removed — falls back to key');
 assert.equal(t('log.fromLastTime'), 'from last time');
 assert.equal(t('log.notSet'), 'Not set');
 assert.equal(t('log.pulsatileLabel'), 'Pulsatile');
@@ -59,11 +59,16 @@ assert.equal(t('log.surroundingNoise'), 'Surrounding noise');
 assert.equal(t('log.noiseQuiet'), 'Quiet');
 assert.equal(t('log.noiseMedium'), 'Medium');
 assert.equal(t('log.noiseLoud'), 'Loud');
-assert.equal(t('log.alcoholTiming'), 'Alcohol');
-assert.equal(t('log.caffeineTiming'), 'Caffeine');
-assert.equal(t('log.within4h'), 'Within 4h');
-assert.equal(t('log.fourTo12h'), '4–12h ago');
-assert.equal(t('log.notInPast12h'), 'Not in the past 12h');
+assert.equal(t('log.alcoholTiming'), 'log.alcoholTiming', 'log.alcoholTiming removed — falls back to key');
+assert.equal(t('log.caffeineTiming'), 'log.caffeineTiming', 'log.caffeineTiming removed — falls back to key');
+assert.equal(t('log.within4h'), 'log.within4h', 'log.within4h removed — falls back to key');
+assert.equal(t('log.fourTo12h'), 'log.fourTo12h', 'log.fourTo12h removed — falls back to key');
+assert.equal(t('log.notInPast12h'), 'log.notInPast12h', 'log.notInPast12h removed — falls back to key');
+// new sleep quality keys
+assert.equal(t('log.sleepQuality'), 'Sleep last night');
+assert.equal(t('log.poor'), 'Poor');
+assert.equal(t('log.fair'), 'Fair');
+assert.equal(t('log.good'), 'Good');
 
 // spot-check Japanese
 setLang('ja');
