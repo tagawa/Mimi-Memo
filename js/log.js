@@ -3,6 +3,7 @@ import {
   createEpisode, addEpisode, updateEpisode, deleteEpisode,
   getEpisodes, defaultsFromLast,
 } from './store.js';
+import { sameDaySleepQuality } from './stats.js';
 
 let onSaved;
 let triggerElement = null;
@@ -85,15 +86,10 @@ const NOISE_LABELS = [
   { value: 'medium', i18nKey: 'log.noiseMedium' },
   { value: 'loud',   i18nKey: 'log.noiseLoud' },
 ];
-const ALCOHOL_LABELS = [
-  { value: 'within4h',     i18nKey: 'log.within4h' },
-  { value: 'fourTo12h',    i18nKey: 'log.fourTo12h' },
-  { value: 'notInPast12h', i18nKey: 'log.notInPast12h' },
-];
-const CAFFEINE_LABELS = [
-  { value: 'within4h',     i18nKey: 'log.within4h' },
-  { value: 'fourTo12h',    i18nKey: 'log.fourTo12h' },
-  { value: 'notInPast12h', i18nKey: 'log.notInPast12h' },
+const SLEEP_LABELS = [
+  { value: 'poor', i18nKey: 'log.poor' },
+  { value: 'fair', i18nKey: 'log.fair' },
+  { value: 'good', i18nKey: 'log.good' },
 ];
 
 function openModal() {
@@ -147,7 +143,7 @@ function bindSubsectionToggle(toggleId, contentId, summaryId = null) {
   if (summaryEl) summaryEl.addEventListener('click', doToggle);
 }
 
-// "Right Now" sub-section: six trigger fields, always starts expanded.
+// "Right Now" sub-section: stress, tiredness, sleep quality, position, noise.
 function rightNowHtml(ep) {
   return `
     <div class="subsection">
@@ -161,16 +157,13 @@ function rightNowHtml(ep) {
         <div id="stress-group">${makePillGroup('log.stress', STRESS_LABELS, ep.stress)}</div>
         <p class="section-label">${t('log.tiredness')}</p>
         <div id="tiredness-group">${makePillGroup('log.tiredness', TIREDNESS_LABELS, ep.tiredness)}</div>
+        <p class="section-label">${t('log.sleepQuality')}</p>
+        <div id="sleep-group">${makePillGroup('log.sleepQuality', SLEEP_LABELS, ep.sleepQuality)}</div>
         <p class="cluster-label">${t('log.environment')}</p>
         <p class="section-label">${t('log.position')}</p>
         <div id="position-group">${makePillGroup('log.position', POSITION_LABELS, ep.position)}</div>
         <p class="section-label">${t('log.surroundingNoise')}</p>
         <div id="noise-group">${makePillGroup('log.surroundingNoise', NOISE_LABELS, ep.surroundingNoise)}</div>
-        <p class="cluster-label">${t('log.recentIntake')}</p>
-        <p class="section-label">${t('log.alcoholTiming')}</p>
-        <div id="alcohol-group">${makePillGroup('log.alcoholTiming', ALCOHOL_LABELS, ep.alcoholTiming)}</div>
-        <p class="section-label">${t('log.caffeineTiming')}</p>
-        <div id="caffeine-group">${makePillGroup('log.caffeineTiming', CAFFEINE_LABELS, ep.caffeineTiming)}</div>
       </div>
     </div>`;
 }
@@ -308,10 +301,9 @@ function bindDetailGroups(id) {
   [
     ['stress-group',    'stress'],
     ['tiredness-group', 'tiredness'],
+    ['sleep-group',     'sleepQuality'],
     ['position-group',  'position'],
     ['noise-group',     'surroundingNoise'],
-    ['alcohol-group',   'alcoholTiming'],
-    ['caffeine-group',  'caffeineTiming'],
   ].forEach(([groupId, field]) => {
     const el = document.getElementById(groupId);
     if (el && !el.dataset.bound) {
@@ -354,7 +346,7 @@ function renderEdit(ep) {
   let loudness = ep.loudness;
   let character = ep.character, pitch = ep.pitch, location = ep.location, pulsatile = ep.pulsatile;
   let stress = ep.stress, tiredness = ep.tiredness, position = ep.position;
-  let surroundingNoise = ep.surroundingNoise, alcoholTiming = ep.alcoholTiming, caffeineTiming = ep.caffeineTiming;
+  let surroundingNoise = ep.surroundingNoise, sleepQuality = ep.sleepQuality;
 
   bindPillGroup(document.getElementById('loudness-group'), '.pill', v => { loudness = v; });
   bindPillGroup(document.getElementById('character-group'), '.pill', v => { character = v; });
@@ -366,8 +358,7 @@ function renderEdit(ep) {
   bindPillGroup(document.getElementById('tiredness-group'), '.pill', v => { tiredness = v; });
   bindPillGroup(document.getElementById('position-group'), '.pill', v => { position = v; });
   bindPillGroup(document.getElementById('noise-group'), '.pill', v => { surroundingNoise = v; });
-  bindPillGroup(document.getElementById('alcohol-group'), '.pill', v => { alcoholTiming = v; });
-  bindPillGroup(document.getElementById('caffeine-group'), '.pill', v => { caffeineTiming = v; });
+  bindPillGroup(document.getElementById('sleep-group'), '.pill', v => { sleepQuality = v; });
 
   bindSubsectionToggle('right-now-toggle', 'right-now-content');
   bindSubsectionToggle('about-toggle', 'about-content', 'about-summary');
@@ -377,7 +368,7 @@ function renderEdit(ep) {
     const notesInput = document.getElementById('notes');
     updateEpisode(ep.id, {
       loudness, character, pitch, location, pulsatile,
-      stress, tiredness, position, surroundingNoise, alcoholTiming, caffeineTiming,
+      stress, tiredness, position, surroundingNoise, sleepQuality,
       startTime: startInput?.value ? new Date(startInput.value).toISOString() : ep.startTime,
       notes: notesInput?.value.trim() || null,
     });
@@ -406,8 +397,10 @@ export function initLog(onSavedCallback) {
 
 // Called by the Log it button: save instantly, then show the just-saved sheet.
 export function logNow() {
-  const isFirstEver = getEpisodes().length === 0; // check BEFORE adding the new entry
+  const episodes = getEpisodes();
+  const isFirstEver = episodes.length === 0; // check BEFORE adding the new entry
   const ep = createEpisode(defaultsFromLast());
+  ep.sleepQuality = sameDaySleepQuality(episodes, new Date()); // auto-fill from same-day entry
   addEpisode(ep);
   onSaved?.();              // refresh home list immediately
   openModal();
