@@ -42,7 +42,7 @@ export function deleteEpisode(id) {
 export function createEpisode(fields = {}) {
   return {
     id: generateUuid(),
-    schemaVersion: 2,
+    schemaVersion: 3,
     startTime: new Date().toISOString(),
     loudness: null,
     character: null,
@@ -54,8 +54,7 @@ export function createEpisode(fields = {}) {
     tiredness: null,
     position: null,
     surroundingNoise: null,
-    alcoholTiming: null,
-    caffeineTiming: null,
+    sleepQuality: null,
     ...fields,
   };
 }
