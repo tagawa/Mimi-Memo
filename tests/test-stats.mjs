@@ -114,4 +114,64 @@ assert.equal(r7.length, 6);
 assert.equal(r7[0].field, 'stress');
 assert.equal(r7[5].field, 'caffeineTiming');
 
+// ── sameDaySleepQuality ───────────────────────────────────────────────────────
+const { sameDaySleepQuality } = await import('../js/stats.js');
+
+// no entries → null
+assert.equal(sameDaySleepQuality([], new Date('2026-06-09T10:00:00')), null, 'sdsq: empty entries');
+
+// entries exist but none on reference day → null
+assert.equal(
+  sameDaySleepQuality(
+    [{ startTime: '2026-06-08T10:00:00', sleepQuality: 'good' }],
+    new Date('2026-06-09T10:00:00')
+  ),
+  null,
+  'sdsq: no same-day entry'
+);
+
+// one same-day entry → returns its value
+assert.equal(
+  sameDaySleepQuality(
+    [{ startTime: '2026-06-09T09:00:00', sleepQuality: 'poor' }],
+    new Date('2026-06-09T10:00:00')
+  ),
+  'poor',
+  'sdsq: one same-day entry'
+);
+
+// multiple same-day entries → returns most recent non-null value
+assert.equal(
+  sameDaySleepQuality(
+    [
+      { startTime: '2026-06-09T08:00:00', sleepQuality: 'poor' },
+      { startTime: '2026-06-09T12:00:00', sleepQuality: 'fair' },
+      { startTime: '2026-06-09T06:00:00', sleepQuality: 'good' },
+    ],
+    new Date('2026-06-09T14:00:00')
+  ),
+  'fair',
+  'sdsq: picks most recent same-day entry'
+);
+
+// same-day entries but all have null sleepQuality → null
+assert.equal(
+  sameDaySleepQuality(
+    [{ startTime: '2026-06-09T08:00:00', sleepQuality: null }],
+    new Date('2026-06-09T10:00:00')
+  ),
+  null,
+  'sdsq: same-day entries with null sleepQuality → null'
+);
+
+// entry on different side of midnight is not included
+assert.equal(
+  sameDaySleepQuality(
+    [{ startTime: '2026-06-08T23:59:00', sleepQuality: 'good' }],
+    new Date('2026-06-09T00:01:00')
+  ),
+  null,
+  'sdsq: entry just before midnight not counted as same day'
+);
+
 console.log('test-stats: all tests passed');

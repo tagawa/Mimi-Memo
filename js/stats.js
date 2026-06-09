@@ -90,3 +90,16 @@ export function pulsatileStats(entries) {
   }
   return { count, recorded, pct: recorded > 0 ? Math.round(count / recorded * 100) : 0 };
 }
+
+// Returns sleepQuality from the most recent same-calendar-day entry with a non-null
+// value (device local time). Returns null if no qualifying entry exists.
+export function sameDaySleepQuality(entries, referenceDate = new Date()) {
+  const refKey = localDateKey(referenceDate);
+  const candidates = entries.filter(
+    e => e.sleepQuality != null && localDateKey(new Date(e.startTime)) === refKey
+  );
+  if (candidates.length === 0) return null;
+  return candidates.reduce((a, b) =>
+    new Date(a.startTime) > new Date(b.startTime) ? a : b
+  ).sleepQuality;
+}
