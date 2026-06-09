@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay, pulsatileStats, triggerContext } = await import('../js/stats.js');
+const { timeOfDayBuckets, dayOfWeekCounts, loudnessBreakdown, entriesPerDay, pulsatileStats, triggerContext, frequencyChartData } = await import('../js/stats.js');
 
 function ep(startTime, loudness = null) { return { startTime, loudness }; }
 
@@ -175,5 +175,71 @@ assert.equal(
   null,
   'sdsq: entry just before midnight not counted as same day'
 );
+
+// ── frequencyChartData ────────────────────────────────────────────────────────
+
+function fep(startTime) { return { startTime }; }
+
+// empty → day mode, no bars
+const fc0 = frequencyChartData([]);
+assert.equal(fc0.mode, 'day', 'frequencyChartData: empty → day mode');
+assert.equal(fc0.bars.length, 0, 'frequencyChartData: empty → no bars');
+
+// two entries on same day → one bar, value 2, no gap-filling
+const fc1 = frequencyChartData([ fep('2026-06-01T10:00:00'), fep('2026-06-01T15:00:00') ]);
+assert.equal(fc1.mode, 'day');
+assert.equal(fc1.bars.length, 1, 'same-day entries → one bar');
+assert.equal(fc1.bars[0].value, 2);
+
+// entries on two non-adjacent days → two bars only (no gap-filling for June 2)
+const fc2 = frequencyChartData([
+  fep('2026-06-01T10:00:00'),
+  fep('2026-06-03T10:00:00'),
+  fep('2026-06-03T15:00:00'),
+]);
+assert.equal(fc2.bars.length, 2, 'no gap-filling between days');
+assert.equal(fc2.bars[0].value, 1, 'first day count');
+assert.equal(fc2.bars[1].value, 2, 'second day count');
+
+// bars are ordered oldest to newest
+assert(fc2.bars[0].key < fc2.bars[1].key, 'bars sorted oldest-to-newest');
+
+// 7+ entries spanning ≥15 calendar days → weekly mode
+// 7 entries from 2026-05-01 to 2026-05-28 = 28-day span
+const fc3 = frequencyChartData([
+  fep('2026-05-04T10:00:00'),  // W19 (Mon)
+  fep('2026-05-11T10:00:00'),  // W20 (Mon)
+  fep('2026-05-11T15:00:00'),  // W20
+  fep('2026-05-18T10:00:00'),  // W21 (Mon)
+  fep('2026-05-25T10:00:00'),  // W22 (Mon)
+  fep('2026-05-25T14:00:00'),  // W22
+  fep('2026-05-28T10:00:00'),  // W22 (Thu)
+]);
+assert.equal(fc3.mode, 'week', '7+ entries spanning 28 days → weekly mode');
+assert.equal(fc3.bars.length, 4, 'grouped into 4 ISO weeks');
+assert.equal(fc3.bars[0].value, 1, 'W19: 1 entry');
+assert.equal(fc3.bars[1].value, 2, 'W20: 2 entries');
+assert.equal(fc3.bars[2].value, 1, 'W21: 1 entry');
+assert.equal(fc3.bars[3].value, 3, 'W22: 3 entries');
+
+// 7+ entries but spanning <15 days → daily mode
+const fc4 = frequencyChartData([
+  fep('2026-06-01T10:00:00'),
+  fep('2026-06-01T11:00:00'),
+  fep('2026-06-01T12:00:00'),
+  fep('2026-06-02T10:00:00'),
+  fep('2026-06-02T11:00:00'),
+  fep('2026-06-02T12:00:00'),
+  fep('2026-06-02T13:00:00'),
+]);
+assert.equal(fc4.mode, 'day', '7 entries spanning 2 days (<15) → daily mode');
+assert.equal(fc4.bars.length, 2, '2 bars in daily mode');
+
+// 7+ entries spanning exactly 14 days → daily mode (boundary: ≤14 = daily)
+const fc5entries = Array.from({ length: 7 }, (_, i) =>
+  fep(`2026-06-0${i + 1}T10:00:00`)
+);
+const fc5 = frequencyChartData(fc5entries);
+assert.equal(fc5.mode, 'day', '7 entries spanning 7 days → daily mode');
 
 console.log('test-stats: all tests passed');

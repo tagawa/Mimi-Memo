@@ -485,9 +485,26 @@ textarea.field-input {
 .bar-chart { width: 100%; height: auto; margin: 8px 0 20px; display: block; }
 
 @media print {
-  .tab-bar, .app-header, #doctor-print, .pill-group { display: none !important; }
+  .tab-bar, .app-header, #doctor-print, .pill-group, .no-print { display: none !important; }
   #view-doctor { display: block !important; }
 }
+
+.storage-note {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 24px;
+  line-height: 1.5;
+}
+
+.pulsatile-note {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: var(--color-surface-alt, #f0fdf4);
+  border-radius: 6px;
+}
+.pulsatile-note[hidden] { display: none; }
 
 .doctor-summary { margin: 16px 0; line-height: 1.6; }
 .doctor-summary p { margin: 6px 0; }

@@ -103,4 +103,49 @@ assert.equal(sTrig.triggers[0].topPct, 67); // Math.round(2/3 * 100)
 const sTrigNone = summarise([epFull(1)], null);
 assert.equal(sTrigNone.triggers.length, 0, 'triggers [] when all null');
 
+// ── topOf minimum-N threshold (≥3 entries must have a value) ─────────────────
+
+// 2 entries with character set → suppressed
+const sMin2 = summarise([
+  { ...daysAgo(1), character: 'ringing' },
+  { ...daysAgo(2), character: 'ringing' },
+], null);
+assert.equal(sMin2.topCharacter, null, 'topCharacter null when only 2 entries have a value');
+
+// exactly 3 entries with character set → returned
+const sMin3 = summarise([
+  { ...daysAgo(1), character: 'ringing' },
+  { ...daysAgo(2), character: 'ringing' },
+  { ...daysAgo(3), character: 'buzzing' },
+], null);
+assert.equal(sMin3.topCharacter, 'ringing', 'topCharacter returned when exactly 3 entries have value');
+
+// null entries don't count toward the N threshold
+const sMin3WithNulls = summarise([
+  { ...daysAgo(1), character: 'ringing' },
+  { ...daysAgo(2), character: null },
+  { ...daysAgo(3), character: 'ringing' },
+  { ...daysAgo(4), character: null },
+], null);
+assert.equal(sMin3WithNulls.topCharacter, null, 'null entries do not count toward minimum-N');
+
+// ── topOf enum-order tie-breaking ────────────────────────────────────────────
+
+// 3 entries, all tied (count 1 each), insertion order [hissing, ringing, buzzing]
+// Current sort is non-stable for equal counts → would return 'hissing'; correct answer is 'ringing'
+const sTieChar = summarise([
+  { ...daysAgo(1), character: 'hissing' },
+  { ...daysAgo(2), character: 'ringing' },
+  { ...daysAgo(3), character: 'buzzing' },
+], null);
+assert.equal(sTieChar.topCharacter, 'ringing', 'topCharacter: enum-order tie-breaking (ringing before hissing/buzzing)');
+
+// pitch tie: [mixed, low, high] insertion order → 'high' is first in enum
+const sTiePitch = summarise([
+  { ...daysAgo(1), pitch: 'mixed' },
+  { ...daysAgo(2), pitch: 'low' },
+  { ...daysAgo(3), pitch: 'high' },
+], null);
+assert.equal(sTiePitch.topPitch, 'high', 'topPitch: enum-order tie-breaking (high before low/mixed)');
+
 console.log('test-doctor: all tests passed');

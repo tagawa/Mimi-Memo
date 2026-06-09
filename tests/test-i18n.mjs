@@ -78,6 +78,20 @@ assert.equal(t('log.stress'), 'ストレス');
 assert.equal(t('log.rightNow'), '今の状況');
 setLang('en');
 
+// history day-abbreviation keys
+setLang('en');
+assert.equal(t('history.mon'), 'Mo');
+assert.equal(t('history.tue'), 'Tu');
+assert.equal(t('history.wed'), 'We');
+assert.equal(t('history.thu'), 'Th');
+assert.equal(t('history.fri'), 'Fr');
+assert.equal(t('history.sat'), 'Sa');
+assert.equal(t('history.sun'), 'Su');
+setLang('ja');
+assert.equal(t('history.mon'), '月');
+assert.equal(t('history.sun'), '日');
+setLang('en');
+
 // doctor.* keys added in Task 1
 assert.equal(t('doctor.frequencyRate'), 'Frequency');
 assert.equal(t('doctor.perWeek'), 'per week');

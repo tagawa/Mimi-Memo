@@ -1,21 +1,19 @@
 import { t, getLang } from './i18n.js';
 import { getEpisodes } from './store.js';
-import { timeOfDayBuckets, dayOfWeekCounts, entriesPerDay } from './stats.js';
+import { timeOfDayBuckets, dayOfWeekCounts, frequencyChartData } from './stats.js';
 
-// Last `n` days as [{label, value}] using per-day counts (oldest -> newest).
-function lastNDaysData(entries, n) {
-  const perDay = entriesPerDay(entries);
+const DOW_KEYS = ['history.mon','history.tue','history.wed','history.thu','history.fri','history.sat','history.sun'];
+
+// Converts frequencyChartData output to [{label, value}] for barChart.
+function buildFreqData(entries) {
+  const { mode, bars } = frequencyChartData(entries);
   const locale = getLang() === 'ja' ? 'ja-JP' : 'en';
-  const out = [];
-  for (let i = n - 1; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    // Label only the first day of each week to avoid clutter; others blank.
-    const label = (i % 7 === 0) ? d.toLocaleDateString(locale, { day: 'numeric', month: 'numeric' }) : '';
-    out.push({ label, value: perDay[key] ?? 0 });
-  }
-  return out;
+  return bars.map(({ key, value }) => {
+    const label = mode === 'week'
+      ? `W${parseInt(key.split('-W')[1], 10)}`
+      : new Date(key + 'T00:00:00').toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+    return { label, value };
+  });
 }
 
 function formatDateTime(iso) {
@@ -64,11 +62,8 @@ export function renderHistory(onEntryClick) {
     { label: t('history.night'),     value: tod.night },
   ];
   const dow = dayOfWeekCounts(all);
-  const dowLabels = getLang() === 'ja'
-    ? ['月','火','水','木','金','土','日']
-    : ['M','T','W','T','F','S','S'];
-  const dowData = dow.map((v, i) => ({ label: dowLabels[i], value: v }));
-  const freqData = lastNDaysData(all, 14);
+  const dowData = dow.map((v, i) => ({ label: t(DOW_KEYS[i]), value: v }));
+  const freqData = buildFreqData(all);
 
   view.innerHTML = `
     <h2 class="section-label">${t('history.frequency')}</h2>

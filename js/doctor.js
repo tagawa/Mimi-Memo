@@ -13,11 +13,20 @@ export function summarise(entries, periodDays) {
   }
   const loudness = loudnessBreakdown(scoped);
 
-  const topOf = field => {
+  // Enum orders match the data model declaration order (tie-breaker).
+  const CHAR_ORDER = ['ringing', 'buzzing', 'hissing', 'roaring', 'other'];
+  const PITCH_ORDER = ['high', 'low', 'mixed'];
+  const LOC_ORDER = ['left', 'right', 'both', 'inHead'];
+
+  // Returns the most common value for field, or null when fewer than 3 entries have a value.
+  // Tie-breaking: first value in enumOrder wins.
+  const topOf = (field, enumOrder) => {
     const counts = {};
     for (const e of scoped) if (e[field]) counts[e[field]] = (counts[e[field]] ?? 0) + 1;
-    const keys = Object.keys(counts);
-    return keys.length ? keys.sort((a, b) => counts[b] - counts[a])[0] : null;
+    const recorded = Object.values(counts).reduce((a, b) => a + b, 0);
+    if (recorded < 3) return null;
+    const max = Math.max(...Object.values(counts));
+    return enumOrder.find(v => (counts[v] ?? 0) === max) ?? null;
   };
 
   const timeOfDay = timeOfDayBuckets(scoped);
@@ -48,9 +57,9 @@ export function summarise(entries, periodDays) {
     frequencyRate,
     loudness,
     pulsatile: pulsatileStats(scoped),
-    topCharacter: topOf('character'),
-    topPitch: topOf('pitch'),
-    topLocation: topOf('location'),
+    topCharacter: topOf('character', CHAR_ORDER),
+    topPitch: topOf('pitch', PITCH_ORDER),
+    topLocation: topOf('location', LOC_ORDER),
     peakTimeOfDay,
     peakDayOfWeek,
     timeOfDay,
@@ -110,14 +119,15 @@ export function renderDoctor() {
       <p><strong>${t('doctor.loudnessBreakdown')}:</strong>
          ${t('log.mild')} ${s.loudness.mild} · ${t('log.moderate')} ${s.loudness.moderate} · ${t('log.severe')} ${s.loudness.severe}</p>
       ${pulsatileRow}
-      ${row('doctor.topCharacter', s.topCharacter && t('log.' + s.topCharacter))}
-      ${row('doctor.topPitch', s.topPitch && (s.topPitch === 'low' ? t('log.pitchLow') : s.topPitch === 'high' ? t('log.pitchHigh') : s.topPitch ? t('log.mixed') : ''))}
-      ${row('doctor.topLocation', s.topLocation && t('log.' + s.topLocation))}
+      ${row('doctor.topCharacter', s.topCharacter ? t('log.' + s.topCharacter) : '—')}
+      ${row('doctor.topPitch', s.topPitch === 'low' ? t('log.pitchLow') : s.topPitch === 'high' ? t('log.pitchHigh') : s.topPitch === 'mixed' ? t('log.mixed') : '—')}
+      ${row('doctor.topLocation', s.topLocation ? t('log.' + s.topLocation) : '—')}
       ${row('doctor.peakTime', s.peakTimeOfDay && t('history.' + s.peakTimeOfDay))}
       ${row('doctor.peakDay', s.peakDayOfWeek != null ? weekdayName(s.peakDayOfWeek) : null)}
       ${triggerSection}
     </div>
     <button class="btn-primary" id="doctor-print">${t('doctor.print')}</button>
+    <p class="storage-note no-print">${t('doctor.storageNote')}</p>
   `;
 
   view.querySelectorAll('[data-period]').forEach(btn => {

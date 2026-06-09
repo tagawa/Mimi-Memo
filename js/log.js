@@ -201,7 +201,8 @@ function aboutTinnitusHtml(ep, startExpanded, showFromLastTime) {
           <div id="location-group">${makePillGroup('log.location', LOCATION_LABELS, ep.location)}</div></div>
         <div class="pill-section"><p class="section-label">${t('log.pulsatile')}</p>
           <div id="pulsatile-group">${makePillGroup('log.pulsatile', PULSATILE_LABELS,
-            ep.pulsatile === true ? 'yes' : ep.pulsatile === false ? 'no' : null)}</div></div>
+            ep.pulsatile === true ? 'yes' : ep.pulsatile === false ? 'no' : null)}</div>
+          <p id="pulsatile-note" class="pulsatile-note" hidden>${t('log.pulsatileNote')}</p></div>
       </div>
     </div>`;
 }
@@ -294,8 +295,11 @@ function bindDetailGroups(id) {
   const pulse = document.getElementById('pulsatile-group');
   if (pulse && !pulse.dataset.bound) {
     pulse.dataset.bound = '1';
-    bindPillGroup(pulse, '.pill', v =>
-      updateEpisode(id, { pulsatile: v === 'yes' ? true : v === 'no' ? false : null }));
+    bindPillGroup(pulse, '.pill', v => {
+      updateEpisode(id, { pulsatile: v === 'yes' ? true : v === 'no' ? false : null });
+      const note = document.getElementById('pulsatile-note');
+      if (note) note.hidden = v !== 'yes';
+    });
   }
   // Right Now groups — all auto-persist immediately on tap
   [
@@ -352,8 +356,11 @@ function renderEdit(ep) {
   bindPillGroup(document.getElementById('character-group'), '.pill', v => { character = v; });
   bindPillGroup(document.getElementById('pitch-group'), '.pill', v => { pitch = v; });
   bindPillGroup(document.getElementById('location-group'), '.pill', v => { location = v; });
-  bindPillGroup(document.getElementById('pulsatile-group'), '.pill',
-    v => { pulsatile = v === 'yes' ? true : v === 'no' ? false : null; });
+  bindPillGroup(document.getElementById('pulsatile-group'), '.pill', v => {
+    pulsatile = v === 'yes' ? true : v === 'no' ? false : null;
+    const note = document.getElementById('pulsatile-note');
+    if (note) note.hidden = v !== 'yes';
+  });
   bindPillGroup(document.getElementById('stress-group'), '.pill', v => { stress = v; });
   bindPillGroup(document.getElementById('tiredness-group'), '.pill', v => { tiredness = v; });
   bindPillGroup(document.getElementById('position-group'), '.pill', v => { position = v; });
