@@ -227,9 +227,6 @@ function renderJustSaved(ep, isFirstEver) {
       <h2 id="log-modal-title" class="modal-title">${t('log.saved')}</h2>
       <p class="section-label">${t('log.loudness')}</p>
       <div id="loudness-group">${makePillGroup('log.loudness', LOUDNESS_LABELS, ep.loudness)}</div>
-      <div class="modal-actions">
-        <button class="btn-primary" id="sheet-done">${t('log.done')}</button>
-      </div>
       <div class="divider">
         <button id="optional-toggle" class="optional-toggle" aria-expanded="false" aria-controls="optional-section"
             >${t('log.addDetails')} &#x25be;</button>
@@ -239,12 +236,15 @@ function renderJustSaved(ep, isFirstEver) {
         ${aboutTinnitusHtml(ep, aboutExpanded, true)}
         ${notesHtml(ep)}
       </div>
-      <button id="sheet-undo" class="btn-danger">${t('log.undo')}</button>
+      <div class="modal-footer">
+        <button class="btn-primary" id="sheet-save">${t('log.save')}</button>
+        <button id="sheet-cancel" class="btn-danger">${t('log.cancel')}</button>
+      </div>
     </div>`;
 
   bindPillGroup(document.getElementById('loudness-group'), '.pill', v => {
     loudness = v;
-    updateEpisode(ep.id, { loudness });   // persist immediately so Done just closes
+    updateEpisode(ep.id, { loudness });   // persist immediately so Save just closes
   });
 
   // Bind all pill groups up front — works even when sections are hidden
@@ -264,13 +264,13 @@ function renderJustSaved(ep, isFirstEver) {
   bindSubsectionToggle('right-now-toggle', 'right-now-content');
   bindSubsectionToggle('about-toggle', 'about-content', 'about-summary');
 
-  document.getElementById('sheet-done').addEventListener('click', () => {
+  document.getElementById('sheet-save').addEventListener('click', () => {
     persistDetailFieldsIfPresent(ep.id);
     closeModal();
     document.getElementById('status-msg').textContent = t('log.saved');
     onSaved?.();
   });
-  document.getElementById('sheet-undo').addEventListener('click', () => {
+  document.getElementById('sheet-cancel').addEventListener('click', () => {
     deleteEpisode(ep.id);
     closeModal();
     document.getElementById('status-msg').textContent = t('log.deleted');
@@ -343,8 +343,10 @@ function renderEdit(ep) {
       ${rightNowHtml(ep)}
       ${aboutTinnitusHtml(ep, aboutExpanded, false)}
       ${notesHtml(ep)}
-      <button class="btn-primary" id="modal-save">${t('log.save')}</button>
-      <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
+      <div class="modal-footer">
+        <button class="btn-primary" id="modal-save">${t('log.save')}</button>
+        <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
+      </div>
     </div>`;
 
   let loudness = ep.loudness;
