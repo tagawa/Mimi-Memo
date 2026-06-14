@@ -1,37 +1,3 @@
-/* === Design Tokens === */
-:root {
-  --color-accent:          #0f766e;
-  --color-accent-dark:     #0d5c56;
-  --color-accent-rgb:      15, 118, 110; /* keep in sync with --color-accent; used for rgba() shadows */
-  --color-accent-bg:       #ccfbf1;
-  --color-mild:            #2e7d32;
-  --color-moderate:        #b45309;
-  --color-severe:          #b91c1c;
-  --color-mild-bg:         #dcfce7;
-  --color-moderate-bg:     #fef3c7;
-  --color-severe-bg:       #fee2e2;
-  --color-text:            #1a1a1a;
-  --color-text-secondary:  #555555;
-  --color-text-muted:      #767676;
-  --color-border:          #d1d5db;
-  --color-surface:         #f5f7fa;
-  --color-white:           #ffffff;
-
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-pill: 24px;
-
-  --space-xs:  4px;
-  --space-sm:  8px;
-  --space-md:  16px;
-  --space-lg:  24px;
-  --space-xl:  32px;
-
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --tab-bar-height: 60px;
-  --header-height: 52px;
-}
-
 /* === Base font size === */
 html { font-size: 18px; }
 
@@ -39,9 +5,9 @@ html { font-size: 18px; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  background: var(--color-white);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1a1a1a;
+  background: #ffffff;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
 }
@@ -72,9 +38,9 @@ input, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-md);
-  height: var(--header-height);
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 16px;
+  height: 52px;
+  border-bottom: 1px solid #d1d5db;
   flex-shrink: 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* upward shadow — strip sits above scrolling content */
 }
@@ -82,22 +48,22 @@ input, textarea {
 .app-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-accent);
+  color: #0f766e;
 }
 
 .lang-toggle {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-accent);
-  padding: var(--space-xs) var(--space-sm);
-  border: 1.5px solid var(--color-accent);
-  border-radius: var(--radius-pill);
+  color: #0f766e;
+  padding: 4px 8px;
+  border: 1.5px solid #0f766e;
+  border-radius: 24px;
   min-width: 44px;
   min-height: 36px;
 }
 
 .lang-toggle:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 2px;
 }
 
@@ -112,7 +78,7 @@ input, textarea {
   position: absolute;
   inset: 0;
   overflow-y: auto;
-  padding: var(--space-md);
+  padding: 16px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -123,9 +89,9 @@ input, textarea {
 .tab-bar {
   display: flex;
   /* expand total height by safe-area-inset-bottom so the icon content area
-     stays at --tab-bar-height in PWA mode (otherwise padding eats into it) */
-  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border);
+     stays at 60px in PWA mode (otherwise padding eats into it) */
+  height: calc(60px + env(safe-area-inset-bottom));
+  border-top: 1px solid #d1d5db;
   flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -139,7 +105,7 @@ input, textarea {
   gap: 2px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--color-text-muted);
+  color: #767676;
   min-height: 44px;
   transition: color 0.15s;
   text-decoration: none; /* <a> elements have underline by default */
@@ -147,12 +113,12 @@ input, textarea {
 
 .tab.active,
 .tab[aria-current="page"] {
-  color: var(--color-accent);
+  color: #0f766e;
   font-weight: 700;
 }
 
 .tab:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: -3px;
 }
 
@@ -161,43 +127,43 @@ input, textarea {
 /* === Loudness Pills (Mild / Moderate / Severe) === */
 .pill-group {
   display: flex;
-  gap: var(--space-sm);
+  gap: 8px;
 }
 
 .pill {
   flex: 1;
   padding: 10px 0;
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
-  background: var(--color-surface);
+  color: #555555;
+  background: #f5f7fa;
   min-height: 44px;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .pill:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 2px;
 }
 
 .pill[aria-pressed="true"].pill--mild {
-  background: var(--color-mild);
-  color: var(--color-white);
-  border-color: var(--color-mild);
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
 }
 
 .pill[aria-pressed="true"].pill--moderate {
-  background: var(--color-moderate);
-  color: var(--color-white);
-  border-color: var(--color-moderate);
+  background: #b45309;
+  color: #ffffff;
+  border-color: #b45309;
 }
 
 .pill[aria-pressed="true"].pill--severe {
-  background: var(--color-severe);
-  color: var(--color-white);
-  border-color: var(--color-severe);
+  background: #b91c1c;
+  color: #ffffff;
+  border-color: #b91c1c;
 }
 
 /* === Loudness Badge (history list) === */
@@ -206,21 +172,21 @@ input, textarea {
   align-items: center;
   justify-content: center;
   min-width: 64px;
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
-.loudness-badge--mild     { background: var(--color-mild-bg); color: var(--color-mild); }
-.loudness-badge--moderate { background: var(--color-moderate-bg); color: var(--color-moderate); }
-.loudness-badge--severe   { background: var(--color-severe-bg); color: var(--color-severe); }
-.loudness-badge--unset     { background: var(--color-surface); color: var(--color-text-muted); }
+.loudness-badge--mild     { background: #dcfce7; color: #2e7d32; }
+.loudness-badge--moderate { background: #fef3c7; color: #b45309; }
+.loudness-badge--severe   { background: #fee2e2; color: #b91c1c; }
+.loudness-badge--unset    { background: #f5f7fa; color: #767676; }
 
 /* Amber dot + text shown when loudness has not been recorded */
 .entry-needs-details {
-  color: var(--color-moderate);
+  color: #b45309;
   font-weight: 600;
 }
 .entry-needs-details::before {
@@ -228,7 +194,7 @@ input, textarea {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--color-moderate);
+  background: #b45309;
   border-radius: 50%;
   margin-right: 5px;
   vertical-align: middle;
@@ -239,10 +205,10 @@ input, textarea {
 .btn-primary {
   display: block;
   width: 100%;
-  padding: var(--space-md);
-  background: var(--color-accent);
-  color: var(--color-white);
-  border-radius: var(--radius-md);
+  padding: 16px;
+  background: #0f766e;
+  color: #ffffff;
+  border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 700;
   min-height: 52px;
@@ -250,11 +216,11 @@ input, textarea {
 }
 
 .btn-primary:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 2px;
 }
 
-.btn-primary:active { background: var(--color-accent-dark); }
+.btn-primary:active { background: #0d5c56; }
 
 /* Circular primary action button (home screen) */
 .btn-log {
@@ -265,25 +231,24 @@ input, textarea {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: var(--color-accent);
-  color: var(--color-white);
+  background: #0f766e;
+  color: #ffffff;
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.25;
   text-align: center;
-  margin: 0 auto var(--space-xl);
-  box-shadow: 0 6px 16px rgba(var(--color-accent-rgb), 0.5), 0 12px 40px rgba(var(--color-accent-rgb), 0.3);
+  margin: 0 auto 32px;
+  box-shadow: 0 6px 16px rgba(15, 118, 110, 0.5), 0 12px 40px rgba(15, 118, 110, 0.3);
   transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 
-
 .btn-log:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 4px;
 }
 .btn-log:active {
-  background: var(--color-accent-dark);
-  box-shadow: 0 2px 6px rgba(var(--color-accent-rgb), 0.3);
+  background: #0d5c56;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
   transform: scale(0.92);
 }
 
@@ -292,29 +257,29 @@ input, textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-md);
+  gap: 16px;
   min-height: 44px;
 }
 
 .field-label {
   font-size: 1rem;
-  color: var(--color-text-secondary);
+  color: #555555;
   flex-shrink: 0;
 }
 
 .field-input {
-  padding: var(--space-xs) var(--space-sm);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
   font-size: 1rem;
-  color: var(--color-text);
-  background: var(--color-surface);
+  color: #1a1a1a;
+  background: #f5f7fa;
   text-align: right;
   width: 120px;
 }
 
 .field-input:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 1px;
 }
 
@@ -332,17 +297,17 @@ textarea.field-input {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-sm);
+  color: #767676;
+  margin-bottom: 8px;
 }
 
 /* === Divider === */
 .divider {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  margin: var(--space-md) 0;
-  color: var(--color-text-muted);
+  gap: 8px;
+  margin: 16px 0;
+  color: #767676;
   font-size: 0.8rem;
 }
 
@@ -351,16 +316,16 @@ textarea.field-input {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--color-border);
+  background: #d1d5db;
 }
 
 /* === Entry Card (home + history list) === */
 .entry-card {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md);
-  border-bottom: 1px solid var(--color-border);
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #d1d5db;
   min-height: 64px;
   cursor: pointer;
   background: none;
@@ -369,7 +334,7 @@ textarea.field-input {
 }
 
 .entry-card:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: -3px;
 }
 
@@ -379,13 +344,13 @@ textarea.field-input {
   display: block;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: #1a1a1a;
 }
 
 .entry-card-summary {
   display: block;
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: #767676;
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -393,7 +358,7 @@ textarea.field-input {
 }
 
 .entry-card-arrow {
-  color: var(--color-border);
+  color: #d1d5db;
   font-size: 1.2rem;
   flex-shrink: 0;
 }
@@ -421,28 +386,27 @@ textarea.field-input {
   max-width: 480px;
   margin-left: auto;
   margin-right: auto;
-  background: var(--color-white);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: #ffffff;
+  border-radius: 12px 12px 0 0;
   max-height: 90vh;
   max-height: 90dvh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom));
 }
 
 .modal-handle {
   width: 40px;
   height: 4px;
-  background: var(--color-border);
+  background: #d1d5db;
   border-radius: 2px;
-  margin: var(--space-sm) auto var(--space-md);
+  margin: 8px auto 16px;
 }
 
 /* === Empty state === */
 .empty-state {
   text-align: center;
-  padding: var(--space-xl) var(--space-md);
-  color: var(--color-text-muted);
+  padding: 32px 16px;
+  color: #767676;
   font-size: 1rem;
   line-height: 2;
 }
@@ -452,34 +416,34 @@ textarea.field-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: var(--space-sm);
-  padding: var(--space-sm);
+  margin-top: 8px;
+  padding: 8px;
   min-height: 44px; /* touch target */
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: #767676;
   text-decoration: none;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
 }
 
 .see-more-link:hover {
-  color: var(--color-text-secondary);
+  color: #555555;
   text-decoration: underline;
 }
 
 .see-more-link:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid #0f766e;
   outline-offset: 2px;
-  color: var(--color-text-secondary);
+  color: #555555;
 }
 
 /* Active state for pills that have no colour modifier (period / character / pitch / location / pulsatile).
    The more specific .pill[aria-pressed="true"].pill--mild|moderate|severe rules still win for loudness pills. */
-.pill[aria-pressed="true"] { background: var(--color-accent); color: var(--color-white); border-color: var(--color-accent); }
+.pill[aria-pressed="true"] { background: #0f766e; color: #ffffff; border-color: #0f766e; }
 
 .btn-danger {
   display: block; width: 100%; margin-top: 16px; padding: 12px;
-  color: var(--color-severe); font-weight: 600; background: none;
-  border: 1.5px solid var(--color-severe); border-radius: var(--radius-md);
+  color: #b91c1c; font-weight: 600; font-size: 1.1rem; background: none;
+  border: 1.5px solid #b91c1c; border-radius: 12px;
 }
 
 .bar-chart { width: 100%; height: auto; margin: 8px 0 20px; display: block; }
@@ -491,17 +455,17 @@ textarea.field-input {
 
 .storage-note {
   font-size: 0.8rem;
-  color: var(--color-muted);
+  color: #767676;
   margin-top: 24px;
   line-height: 1.5;
 }
 
 .pulsatile-note {
   font-size: 0.85rem;
-  color: var(--color-muted);
+  color: #767676;
   margin-top: 6px;
   padding: 6px 10px;
-  background: var(--color-surface-alt, #f0fdf4);
+  background: #f0fdf4;
   border-radius: 6px;
 }
 .pulsatile-note[hidden] { display: none; }
@@ -516,7 +480,7 @@ textarea.field-input {
 
 /* --- Log sheet subsections --- */
 .subsection {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #d1d5db;
   margin-top: 16px;
   padding-top: 8px;
 }
@@ -531,7 +495,7 @@ textarea.field-input {
   border: none;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: #1a1a1a;
   cursor: pointer;
   text-align: left;
   min-height: 44px; /* touch target */
@@ -539,7 +503,7 @@ textarea.field-input {
 
 .subsection-header .chevron {
   font-size: 1rem;
-  color: var(--color-muted);
+  color: #767676;
   flex-shrink: 0;
   margin-left: 8px;
 }
@@ -553,7 +517,7 @@ textarea.field-input {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-muted);
+  color: #767676;
   margin: 16px 0 8px;
 }
 
@@ -563,7 +527,7 @@ textarea.field-input {
 
 .subsection-summary {
   font-size: 0.8rem;
-  color: var(--color-muted);
+  color: #767676;
   margin: 0 0 8px;
   white-space: nowrap;
   overflow: hidden;
@@ -577,35 +541,37 @@ textarea.field-input {
 }
 
 /* === Log Modal Sheet === */
-.modal-body { padding: 0 var(--space-md) var(--space-lg); }
+.modal-body { padding: 0 16px; }
 
 .modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
 .modal-title--edit { margin-bottom: 12px; }
 
-.modal-actions { display: flex; gap: 12px; margin-top: 20px; }
-.modal-actions > .btn-primary { flex: 1; }
-.modal-actions + .divider { margin-top: 20px; }
+.modal-footer {
+  position: sticky;
+  bottom: 0;
+  background: #ffffff;
+  padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+  border-top: 1px solid #d1d5db;
+}
 
-.optional-toggle { color: var(--color-accent); font-weight: 600; }
+.optional-toggle { color: #0f766e; font-weight: 600; font-size: 1rem; padding: 8px 0; }
 
 .notes-section {
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-md);
-  margin-top: var(--space-md);
+  border-top: 1px solid #d1d5db;
+  padding-top: 16px;
+  margin-top: 16px;
 }
-.notes-section textarea { margin-top: var(--space-sm); }
+.notes-section textarea { margin-top: 8px; }
 
 /* Wrappers for second+ pill groups within about-tinnitus section */
-.pill-section { margin-top: var(--space-md); }
+.pill-section { margin-top: 16px; }
 
 /* Gap before second+ section-label within a subsection cluster */
 .subsection-content > div + .section-label { margin-top: 12px; }
 
 /* Edit-mode datetime field overrides */
-.field--stacked { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: var(--space-md); }
+.field--stacked { flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 16px; }
 .field-input--full { width: 100%; }
-
-#modal-save { margin-top: 20px; }
 
 /* Screen-reader only (visually hidden) */
 .sr-only {
