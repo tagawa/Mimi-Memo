@@ -38,7 +38,7 @@ function barChart(data, label) {
     const h = (d.value / max) * 80;
     const x = i * bw + bw * 0.15;
     const w = bw * 0.7;
-    return `<rect x="${x}" y="${90 - h}" width="${w}" height="${h}" fill="var(--color-accent)" rx="1"/>
+    return `<rect x="${x}" y="${90 - h}" width="${w}" height="${h}" fill="#0f766e" rx="1"/>
             <text x="${x + w/2}" y="98" font-size="9" text-anchor="middle" fill="#666">${d.label}</text>
             <text x="${x + w/2}" y="${88 - h}" font-size="4.5" text-anchor="middle" fill="#666">${d.value || ''}</text>`;
   }).join('');
