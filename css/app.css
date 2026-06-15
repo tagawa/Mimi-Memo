@@ -88,9 +88,6 @@ input, textarea {
 /* === Tab Bar === */
 .tab-bar {
   display: flex;
-  /* expand total height by safe-area-inset-bottom so the icon content area
-     stays at 60px in PWA mode (otherwise padding eats into it) */
-  height: calc(60px + env(safe-area-inset-bottom));
   border-top: 1px solid #d1d5db;
   flex-shrink: 0;
   padding-bottom: env(safe-area-inset-bottom);
@@ -106,7 +103,7 @@ input, textarea {
   font-size: 0.8rem;
   font-weight: 500;
   color: #767676;
-  min-height: 44px;
+  min-height: 60px;
   transition: color 0.15s;
   text-decoration: none; /* <a> elements have underline by default */
 }
@@ -441,7 +438,10 @@ textarea.field-input {
 .pill[aria-pressed="true"] { background: #0f766e; color: #ffffff; border-color: #0f766e; }
 
 .btn-danger {
-  display: block; width: 100%; margin-top: 16px; padding: 12px;
+  /* flex: 0 0 auto keeps the button at its min-width in the footer row; min-width 112px is
+     derived from キャンセル (5 CJK chars) at 1.1rem + 12px horizontal padding each side
+     at the 320px layout floor — recalculate if font size, padding, or JA label changes */
+  display: block; flex: 1; min-width: 112px; padding: 12px;
   color: #b91c1c; font-weight: 600; font-size: 1.1rem; background: none;
   border: 1.5px solid #b91c1c; border-radius: 12px;
 }
@@ -552,6 +552,16 @@ textarea.field-input {
   background: #ffffff;
   padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
   border-top: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+/* Save takes remaining width; scoped here because .btn-primary is also used standalone
+   (e.g. doctor Print button) where display:block / width:100% should be preserved */
+.modal-footer .btn-primary {
+  flex: 2;
+  width: auto;
 }
 
 .optional-toggle { color: #0f766e; font-weight: 600; font-size: 1rem; padding: 8px 0; }

@@ -237,8 +237,8 @@ function renderJustSaved(ep, isFirstEver) {
         ${notesHtml(ep)}
       </div>
       <div class="modal-footer">
-        <button class="btn-primary" id="sheet-save">${t('log.save')}</button>
         <button id="sheet-cancel" class="btn-danger">${t('log.cancel')}</button>
+        <button class="btn-primary" id="sheet-save">${t('log.save')}</button>
       </div>
     </div>`;
 
@@ -344,8 +344,8 @@ function renderEdit(ep) {
       ${aboutTinnitusHtml(ep, aboutExpanded, false)}
       ${notesHtml(ep)}
       <div class="modal-footer">
-        <button class="btn-primary" id="modal-save">${t('log.save')}</button>
         <button id="modal-delete" class="btn-danger">${t('log.delete')}</button>
+        <button class="btn-primary" id="modal-save">${t('log.save')}</button>
       </div>
     </div>`;
 
